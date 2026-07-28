@@ -341,6 +341,14 @@ function SettingsPage() {
           >
             حذف كل الذاكرة
           </button>
+          {nico.isAuthenticated && (
+            <Link
+              to="/privacy"
+              className="rounded-2xl border border-primary/50 bg-primary/10 px-4 py-2 text-xs text-primary"
+            >
+              مركز الخصوصية →
+            </Link>
+          )}
         </div>
         {compressed !== null && (
           <p className="text-[11px] text-muted-foreground">

@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MobileIndexRouteImport } from './routes/mobile/index'
 import { Route as MobileSettingsRouteImport } from './routes/mobile/settings'
+import { Route as AuthenticatedPrivacyRouteImport } from './routes/_authenticated/privacy'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiNicoTranscribeRouteImport } from './routes/api/nico/transcribe'
 import { Route as ApiNicoThinkRouteImport } from './routes/api/nico/think'
@@ -61,6 +62,11 @@ const MobileSettingsRoute = MobileSettingsRouteImport.update({
   path: '/mobile/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPrivacyRoute = AuthenticatedPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/privacy': typeof AuthenticatedPrivacyRoute
   '/mobile/settings': typeof MobileSettingsRoute
   '/mobile/': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/privacy': typeof AuthenticatedPrivacyRoute
   '/mobile/settings': typeof MobileSettingsRoute
   '/mobile': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/privacy': typeof AuthenticatedPrivacyRoute
   '/mobile/settings': typeof MobileSettingsRoute
   '/mobile/': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/privacy'
     | '/mobile/settings'
     | '/mobile/'
     | '/api/nico/speak'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/privacy'
     | '/mobile/settings'
     | '/mobile'
     | '/api/nico/speak'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
+    | '/_authenticated/privacy'
     | '/mobile/settings'
     | '/mobile/'
     | '/api/nico/speak'
@@ -238,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MobileSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/privacy': {
+      id: '/_authenticated/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof AuthenticatedPrivacyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -271,10 +290,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPrivacyRoute: typeof AuthenticatedPrivacyRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPrivacyRoute: AuthenticatedPrivacyRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -296,13 +317,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
