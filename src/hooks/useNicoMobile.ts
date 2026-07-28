@@ -16,6 +16,7 @@ import {
   upgradeGuestData,
   type BackgroundServiceState,
 } from "@/packages/mobile";
+import { onNativeWake } from "@/packages/mobile-bridge/wake";
 import type { PermissionKey } from "@/packages/shared/types";
 
 const ONBOARD_KEY = "nico.mobile.onboarded.v1";
@@ -45,6 +46,7 @@ export function useNicoMobile() {
   const [migrated, setMigrated] = useState<number | null>(null);
   const [offline, setOffline] = useState(false);
   const [mobileError, setMobileError] = useState<string | null>(null);
+  const [wokeAt, setWokeAt] = useState<number | null>(null);
   const upgradedFor = useRef<string | null>(null);
 
   const permissions = useMemo(
@@ -100,6 +102,17 @@ export function useNicoMobile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nico.assistant.alwaysReady, nico.assistant.wakeWord, service]);
 
+  // Native wake word: «يا نيكو» detected by the foreground service opens a
+  // hands-free conversation on the same brain, no button press needed.
+  useEffect(() => {
+    return onNativeWake(() => {
+      setWokeAt(Date.now());
+      void tapFeedback();
+      void nico.startConversation();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nico.startConversation]);
+
   // Guest data is promoted to the account the first time the user signs in.
   useEffect(() => {
     if (!nico.authEmail || upgradedFor.current === nico.authEmail) return;
@@ -142,6 +155,7 @@ export function useNicoMobile() {
     requestPermission,
     background,
     offline,
+    wokeAt,
     migratedMemories: migrated,
     mobileError,
     clearMobileError: () => setMobileError(null),
