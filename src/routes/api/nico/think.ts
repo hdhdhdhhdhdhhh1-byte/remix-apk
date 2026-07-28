@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { aiClient } from "@/lib/ai/ai.client";
+import { aiClient, type ChatOptions } from "@/lib/ai/ai.client";
 
 const SYSTEM = `أنت "نيكو"، مساعد شخصي صوتي.
 - تتحدث بالعربية بلهجة طبيعية وودودة، وبالإنجليزية إذا خاطبك المستخدم بها.
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/nico/think")({
           .filter(Boolean)
           .join("\n\n");
 
-        const messages = [
+        const messages: ChatOptions["messages"] = [
           { role: "system", content: systemPrompt },
           ...(context ? [{ role: "system" as const, content: context }] : []),
           ...(body?.history ?? []).slice(-10).map((t) => ({
