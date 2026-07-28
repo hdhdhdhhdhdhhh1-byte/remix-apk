@@ -67,3 +67,22 @@ npx @capacitor/assets generate --android --assetPath apps/mobile/resources
 انسخها بعد `npx cap add android` إلى
 `android/app/src/main/java/com/nico/ai/`، وسجّل الإضافة في `MainActivity.java`
 عبر `registerPlugin(NicoVoiceServicePlugin.class)`.
+
+## كلمة التنبيه (wake word)
+
+- الخدمة الأصلية تبث `com.nico.ai.WAKE_EVENT` عند كشف «يا نيكو».
+- `NicoVoiceServicePlugin` يحوّله إلى حدث `wake` في الجسر.
+- `src/packages/mobile-bridge/wake.ts` يلتقطه و`useNicoMobile` يبدأ محادثة
+  بدون يدين على نفس العقل والذاكرة.
+- محرك الكشف نفسه (`VoiceBackgroundService.WakeWordEngine`) واجهة قابلة للحقن،
+  تُربط لاحقاً بـ Porcupine أو Vosk دون تعديل أي كود آخر.
+
+## تهيئة مجلد أندرويد
+
+```bash
+bun run mobile:init
+cp apps/mobile/android/*.kt apps/mobile/android/MainActivity.java \
+   android/app/src/main/java/com/nico/ai/
+# ثم ادمج apps/mobile/android/AndroidManifest.additions.xml
+bun run mobile:build && bun run mobile:run
+```

@@ -43,6 +43,7 @@ class VoiceBackgroundService : Service() {
         const val EXTRA_WAKE_WORD = "wake_word"
         const val EXTRA_TEXT = "foreground_text"
         const val ACTION_WAKE = "com.nico.ai.WAKE"
+        const val ACTION_WAKE_EVENT = "com.nico.ai.WAKE_EVENT"
 
         /** يُحقن من الأعلى عند توفر محرك حقيقي. */
         var engine: WakeWordEngine? = null
@@ -70,6 +71,8 @@ class VoiceBackgroundService : Service() {
     }
 
     private fun onWakeWordDetected() {
+        // يُعلم طبقة الويب فوراً (إن كان التطبيق حياً) ثم يرفع الواجهة للأمام.
+        sendBroadcast(Intent(ACTION_WAKE_EVENT).setPackage(packageName))
         val launch = packageManager.getLaunchIntentForPackage(packageName)?.apply {
             action = ACTION_WAKE
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
