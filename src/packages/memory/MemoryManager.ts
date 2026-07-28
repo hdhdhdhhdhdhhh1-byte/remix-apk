@@ -122,7 +122,7 @@ export class MemoryManager {
    * keeps them as the running memory summary.
    */
   summarizeSession(maxLines = 5): string[] {
-    const lines = this.ranking.summarize(this.shortTerm.recent(50), maxLines);
+    const lines = this.ranking.summarize(this.shortTerm.history(), maxLines);
     if (lines.length) this.summaryLines = lines;
     return lines;
   }
