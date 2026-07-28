@@ -12,10 +12,21 @@ const RULES: Rule[] = [
     intent: "reminder",
     patterns: [/ذكرني|تذكير|منبه|remind/i],
     entities: (t) => {
+      const entities: Record<string, string> = {};
       const m = t.match(/(?:بعد|خلال)\s+(\d+)\s*(دقيقة|دقائق|ساعة|ساعات|minute|hour)/i);
-      return m ? ({ amount: m[1], unit: m[2] } as Record<string, string>) : {};
+      if (m) {
+        entities.amount = m[1];
+        entities.unit = m[2];
+      }
+      const when = parseWhen(t);
+      if (when) {
+        entities.at = String(when.at);
+        entities.whenLabel = when.label;
+      }
+      return entities;
     },
   },
+  { intent: "notes", patterns: [/ملاحظة|ملاحظاتي|الملاحظات|\bnote(s)?\b/i] },
   { intent: "weather", patterns: [/طقس|جو|حرارة|مطر|weather/i] },
   { intent: "calendar", patterns: [/موعد|اجتماع|تقويم|جدول|calendar|meeting/i] },
   { intent: "smart_home", patterns: [/أطفئ|اطفئ|شغل|النور|المكيف|الاضاءة|light|lamp/i] },
