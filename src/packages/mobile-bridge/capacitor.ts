@@ -151,21 +151,16 @@ class CapacitorPhoneActions implements PhoneActionsBridge {
 
 class CapacitorAppControl implements AppControlBridge {
   async openApp(packageName: string) {
+    if (typeof window === "undefined") return false;
     try {
-      const { App } = await import("@capacitor/app");
-      await App.openUrl({ url: `intent://#Intent;package=${packageName};end` });
+      window.location.href = `intent://#Intent;package=${packageName};end`;
       return true;
     } catch {
       return false;
     }
   }
   async openUrl(url: string) {
-    try {
-      const { App } = await import("@capacitor/app");
-      await App.openUrl({ url });
-    } catch {
-      if (typeof window !== "undefined") window.open(url, "_blank", "noopener");
-    }
+    if (typeof window !== "undefined") window.open(url, "_blank", "noopener");
   }
   async setVolume() {
     /* requires a native audio plugin */
