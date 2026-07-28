@@ -12,6 +12,7 @@ export const CATEGORY_BY_INTENT: Record<IntentName, RequestCategory> = {
   calendar: "task_execution",
   search: "search",
   smart_home: "command",
+  notes: "task_execution",
   memory_store: "personal_info",
   memory_recall: "personal_info",
   unknown: "conversation",

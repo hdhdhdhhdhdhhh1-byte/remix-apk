@@ -6,6 +6,7 @@ import { TranscriptPanel } from "@/components/nico/TranscriptPanel";
 import { MobileOnboarding } from "@/components/nico/MobileOnboarding";
 import { useNicoMobile } from "@/hooks/useNicoMobile";
 import { PRESENCE_LABEL } from "@/packages/voice/AssistantPresence";
+import { useOnline } from "@/hooks/useOnline";
 
 export const Route = createFileRoute("/mobile/")({
   head: () => ({
@@ -53,6 +54,7 @@ function MobileApp() {
   const [text, setText] = useState("");
   const [logOpen, setLogOpen] = useState(false);
   const listening = nico.state === "listening";
+  const online = useOnline();
 
   useEffect(() => {
     if (!nico.onboarded) setShowOnboarding(true);
@@ -74,6 +76,12 @@ function MobileApp() {
             void nico.finishOnboarding();
           }}
         />
+      )}
+
+      {!online && (
+        <div className="mb-3 rounded-2xl border border-border bg-secondary px-4 py-2 text-center text-xs text-muted-foreground">
+          لا يوجد اتصال — نيكو يعمل بالذاكرة المحلية والمهارات التي لا تحتاج إنترنت.
+        </div>
       )}
 
       <header className="flex items-center justify-between">

@@ -14,6 +14,7 @@ export type IntentName =
   | "calendar"
   | "search"
   | "smart_home"
+  | "notes"
   | "memory_store"
   | "memory_recall"
   | "unknown";
@@ -125,6 +126,11 @@ export interface Skill {
   description: string;
   intents: IntentName[];
   permissions?: PermissionKey[];
+  /** Whether the skill is active on first run; user can override. */
+  enabledByDefault?: boolean;
+  /** Optional grouping shown in the skills settings screen. */
+  category?: string;
+  version?: string;
   execute(ctx: SkillContext): Promise<SkillResult>;
 }
 
