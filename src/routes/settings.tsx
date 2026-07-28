@@ -66,11 +66,24 @@ function SettingsPage() {
   useEffect(() => {
     const sync = () => setSkills(nico.runtime.skills.describe());
     sync();
-    return nico.runtime.skills.registry.subscribe(sync);
+    const off = nico.runtime.skills.registry.subscribe(sync);
+    return () => {
+      off();
+    };
   }, [nico.runtime]);
 
-  useEffect(() => taskAutomation.subscribe(setSchedules), []);
-  useEffect(() => usageAnalytics.subscribe(setStats), []);
+  useEffect(() => {
+    const off = taskAutomation.subscribe(setSchedules);
+    return () => {
+      off();
+    };
+  }, []);
+  useEffect(() => {
+    const off = usageAnalytics.subscribe(setStats);
+    return () => {
+      off();
+    };
+  }, []);
   useEffect(() => {
     usageAnalytics.configureCloud(
       (e) => nico.logEvent(e.event_type, e.detail),
