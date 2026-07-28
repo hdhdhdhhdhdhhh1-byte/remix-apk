@@ -3,6 +3,7 @@ import { LongTermMemory } from "./LongTermMemory";
 import { ShortTermMemory } from "./ShortTermMemory";
 import { UserProfile } from "./UserProfile";
 import { MemoryIntelligence, type MemoryAnalysis } from "./MemoryIntelligence";
+import { memoryRanking, type RankedMemory } from "./MemoryRanking";
 
 export interface PendingMemory {
   id: string;
@@ -20,7 +21,9 @@ export class MemoryManager {
   readonly longTerm: LongTermMemory;
   readonly profile: UserProfile;
   readonly intelligence = new MemoryIntelligence();
+  readonly ranking = memoryRanking;
   private pending: PendingMemory[] = [];
+  private summaryLines: string[] = [];
 
   constructor(profile = new UserProfile()) {
     this.profile = profile;
@@ -89,11 +92,45 @@ export class MemoryManager {
       this.shortTerm.setSlot(record.key, record.value);
       return null;
     }
-    return this.longTerm.write(record);
+    return this.longTerm.write({
+      ...record,
+      importance: record.importance ?? this.ranking.score(record.value, record.kind),
+    });
   }
 
   recall(query: string): MemoryRecord[] {
     return this.longTerm.search(query);
+  }
+
+  /** Memories ordered by importance × reinforcement × recency. */
+  ranked(limit = 10): RankedMemory[] {
+    return this.ranking.top(this.longTerm.all(), limit);
+  }
+
+  /**
+   * Memory compression — drops duplicates, expired and stale low-value
+   * records. Returns how many were removed.
+   */
+  compress(): number {
+    const { drop } = this.ranking.compress(this.longTerm.all());
+    drop.forEach((id) => this.longTerm.forget(id));
+    return drop.length;
+  }
+
+  /**
+   * Summarizes the current short-term conversation into durable lines and
+   * keeps them as the running memory summary.
+   */
+  summarizeSession(maxLines = 5): string[] {
+    const lines = this.ranking.summarize(this.shortTerm.recent(50), maxLines);
+    if (lines.length) this.summaryLines = lines;
+    return lines;
+  }
+
+  /** Short human summary of what Nico durably knows. */
+  summary(): string[] {
+    const top = this.ranked(5).map((r) => `${r.key}: ${r.value}`);
+    return [...top, ...this.summaryLines];
   }
 
   /** List everything Nico remembers about the user (profile + LTM). */
@@ -118,9 +155,7 @@ export class MemoryManager {
 
   digest(): string {
     const p = this.profile.data;
-    const lines = this.longTerm
-      .all()
-      .slice(0, 12)
+    const lines = this.ranked(12)
       .map((r) => `- ${r.key}: ${r.value}`);
     if (p.name) lines.unshift(`- الاسم: ${p.name}`);
     if (p.preferredName) lines.unshift(`- ينادى بـ: ${p.preferredName}`);
