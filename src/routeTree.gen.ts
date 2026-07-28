@@ -14,6 +14,8 @@ import { Route as NicoRouteImport } from './routes/nico'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MobileIndexRouteImport } from './routes/mobile/index'
+import { Route as MobileSettingsRouteImport } from './routes/mobile/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiNicoTranscribeRouteImport } from './routes/api/nico/transcribe'
 import { Route as ApiNicoThinkRouteImport } from './routes/api/nico/think'
@@ -43,6 +45,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MobileIndexRoute = MobileIndexRouteImport.update({
+  id: '/mobile/',
+  path: '/mobile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MobileSettingsRoute = MobileSettingsRouteImport.update({
+  id: '/mobile/settings',
+  path: '/mobile/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -70,6 +82,8 @@ export interface FileRoutesByFullPath {
   '/nico': typeof NicoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mobile/settings': typeof MobileSettingsRoute
+  '/mobile/': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
   '/api/nico/think': typeof ApiNicoThinkRoute
   '/api/nico/transcribe': typeof ApiNicoTranscribeRoute
@@ -80,6 +94,8 @@ export interface FileRoutesByTo {
   '/nico': typeof NicoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mobile/settings': typeof MobileSettingsRoute
+  '/mobile': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
   '/api/nico/think': typeof ApiNicoThinkRoute
   '/api/nico/transcribe': typeof ApiNicoTranscribeRoute
@@ -92,6 +108,8 @@ export interface FileRoutesById {
   '/nico': typeof NicoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/mobile/settings': typeof MobileSettingsRoute
+  '/mobile/': typeof MobileIndexRoute
   '/api/nico/speak': typeof ApiNicoSpeakRoute
   '/api/nico/think': typeof ApiNicoThinkRoute
   '/api/nico/transcribe': typeof ApiNicoTranscribeRoute
@@ -104,6 +122,8 @@ export interface FileRouteTypes {
     | '/nico'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/mobile/settings'
+    | '/mobile/'
     | '/api/nico/speak'
     | '/api/nico/think'
     | '/api/nico/transcribe'
@@ -114,6 +134,8 @@ export interface FileRouteTypes {
     | '/nico'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/mobile/settings'
+    | '/mobile'
     | '/api/nico/speak'
     | '/api/nico/think'
     | '/api/nico/transcribe'
@@ -125,6 +147,8 @@ export interface FileRouteTypes {
     | '/nico'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
+    | '/mobile/settings'
+    | '/mobile/'
     | '/api/nico/speak'
     | '/api/nico/think'
     | '/api/nico/transcribe'
@@ -136,6 +160,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   NicoRoute: typeof NicoRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  MobileSettingsRoute: typeof MobileSettingsRoute
+  MobileIndexRoute: typeof MobileIndexRoute
   ApiNicoSpeakRoute: typeof ApiNicoSpeakRoute
   ApiNicoThinkRoute: typeof ApiNicoThinkRoute
   ApiNicoTranscribeRoute: typeof ApiNicoTranscribeRoute
@@ -176,6 +202,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile/': {
+      id: '/mobile/'
+      path: '/mobile'
+      fullPath: '/mobile/'
+      preLoaderRoute: typeof MobileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile/settings': {
+      id: '/mobile/settings'
+      path: '/mobile/settings'
+      fullPath: '/mobile/settings'
+      preLoaderRoute: typeof MobileSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -226,6 +266,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   NicoRoute: NicoRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  MobileSettingsRoute: MobileSettingsRoute,
+  MobileIndexRoute: MobileIndexRoute,
   ApiNicoSpeakRoute: ApiNicoSpeakRoute,
   ApiNicoThinkRoute: ApiNicoThinkRoute,
   ApiNicoTranscribeRoute: ApiNicoTranscribeRoute,
@@ -233,13 +275,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
