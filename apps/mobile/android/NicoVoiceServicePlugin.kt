@@ -1,6 +1,9 @@
 package com.nico.ai
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
@@ -18,6 +21,30 @@ import com.getcapacitor.annotation.CapacitorPlugin
  */
 @CapacitorPlugin(name = "NicoVoiceService")
 class NicoVoiceServicePlugin : Plugin() {
+
+    /**
+     * يحوّل كشف كلمة التنبيه في الخدمة إلى حدث `wake` تستمع إليه
+     * `src/packages/mobile-bridge/wake.ts` فيبدأ نيكو المحادثة مباشرة.
+     */
+    private val wakeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctx: Context?, intent: Intent?) {
+            notifyListeners("wake", JSObject().put("wakeWord", intent?.getStringExtra(VoiceBackgroundService.EXTRA_WAKE_WORD)))
+        }
+    }
+
+    override fun load() {
+        val filter = IntentFilter(VoiceBackgroundService.ACTION_WAKE_EVENT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(wakeReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            context.registerReceiver(wakeReceiver, filter)
+        }
+    }
+
+    override fun handleOnDestroy() {
+        runCatching { context.unregisterReceiver(wakeReceiver) }
+        super.handleOnDestroy()
+    }
 
     @PluginMethod
     fun start(call: PluginCall) {
