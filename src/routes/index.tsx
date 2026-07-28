@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NicoOrb } from "@/components/nico/NicoOrb";
 import { VoiceWaves } from "@/components/nico/VoiceWaves";
 import { TranscriptPanel } from "@/components/nico/TranscriptPanel";
@@ -33,10 +33,26 @@ function NicoHome() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
   const listening = nico.state === "listening";
+  const greetedRef = useRef(false);
 
   useEffect(() => {
     if (!hasSeenWelcome()) setShowWelcome(true);
   }, []);
+
+  // Voice-first: Nico speaks first on open once welcome flow is done.
+  useEffect(() => {
+    if (showWelcome || greetedRef.current) return;
+    greetedRef.current = true;
+    const t = window.setTimeout(() => {
+      const lang = nico.voiceProfile.language === "en" ? "en" : "ar";
+      const greeting =
+        lang === "ar"
+          ? "أهلاً وسهلاً، أنا نيكو مساعدك الشخصي، كيف أستطيع مساعدتك؟"
+          : "Hi, I'm Nico, your personal assistant. How can I help?";
+      void nico.runtime.voice.say(greeting).catch(() => {});
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [showWelcome, nico.runtime, nico.voiceProfile.language]);
 
   return (
     <main dir="rtl" className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-5 py-10">
