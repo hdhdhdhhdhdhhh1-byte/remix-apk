@@ -63,6 +63,12 @@ function NicoHome() {
           >
             وضع الصوت
           </Link>
+          <Link
+            to="/mobile"
+            className="rounded-full border border-border px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+          >
+            تطبيق الجوال
+          </Link>
           {nico.isAuthenticated ? (
             <>
               <Link
