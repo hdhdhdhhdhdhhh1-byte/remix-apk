@@ -1,0 +1,31 @@
+<!--
+  أضف هذه العناصر إلى android/app/src/main/AndroidManifest.xml
+  بعد تنفيذ: npx cap add android
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- الصوت أولاً -->
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+  <uses-permission android:name="android.permission.INTERNET" />
+
+  <!-- الإشعارات والتذكيرات -->
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+  <!-- خدمة الاستماع في الخلفية (تُطلب فقط عند تفعيل «يا نيكو») -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+
+  <!-- اختيارية: تُطلب عند أول أمر يحتاجها فقط -->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+  <uses-permission android:name="android.permission.READ_CALENDAR" />
+
+  <application>
+    <service
+      android:name=".VoiceBackgroundService"
+      android:exported="false"
+      android:foregroundServiceType="microphone" />
+  </application>
+</manifest>
