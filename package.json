@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "mobile:build": "vite build && cap sync android",
     "mobile:open": "cap open android",
-    "mobile:run": "cap run android"
+    "mobile:run": "cap run android",
+    "mobile:init": "npx cap add android && node -e \"console.log('انسخ apps/mobile/android/*.kt و MainActivity.java إلى android/app/src/main/java/com/nico/ai/ ثم أضف صلاحيات AndroidManifest.additions.xml')\""
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

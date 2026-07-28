@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { NicoOrb } from "@/components/nico/NicoOrb";
+import { NicoAvatar } from "@/components/nico/NicoAvatar";
 import { VoiceWaves } from "@/components/nico/VoiceWaves";
 import { TranscriptPanel } from "@/components/nico/TranscriptPanel";
 import { MobileOnboarding } from "@/components/nico/MobileOnboarding";
@@ -115,7 +115,7 @@ function MobileApp() {
       )}
 
       <section className="flex flex-1 flex-col items-center justify-center gap-7">
-        <NicoOrb
+        <NicoAvatar
           state={nico.presence}
           level={nico.level}
           onPress={() => void (listening ? nico.stopListening() : nico.startListening())}
