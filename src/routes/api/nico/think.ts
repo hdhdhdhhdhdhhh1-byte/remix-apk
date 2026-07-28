@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { aiClient, type ChatOptions } from "@/lib/ai/ai.client";
 
 const SYSTEM = `أنت "نيكو"، مساعد شخصي صوتي.
 - تتحدث بالعربية بلهجة طبيعية وودودة، وبالإنجليزية إذا خاطبك المستخدم بها.
@@ -22,8 +23,7 @@ export const Route = createFileRoute("/api/nico/think")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env.LOVABLE_API_KEY;
-        if (!apiKey) return new Response("AI gateway not configured", { status: 500 });
+        if (!aiClient.isConfigured()) return new Response("AI provider not configured", { status: 500 });
 
         const body = (await request.json().catch(() => null)) as ThinkBody | null;
         const transcript = body?.transcript?.trim();
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/nico/think")({
           .filter(Boolean)
           .join("\n\n");
 
-        const messages = [
+        const messages: ChatOptions["messages"] = [
           { role: "system", content: systemPrompt },
           ...(context ? [{ role: "system" as const, content: context }] : []),
           ...(body?.history ?? []).slice(-10).map((t) => ({
@@ -49,18 +49,7 @@ export const Route = createFileRoute("/api/nico/think")({
           { role: "user" as const, content: transcript },
         ];
 
-        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-3.6-flash",
-            messages,
-            response_format: { type: "json_object" },
-          }),
-        });
+        const res = await aiClient.chat({ messages, jsonMode: true });
 
         if (!res.ok) {
           const detail = await res.text().catch(() => "");

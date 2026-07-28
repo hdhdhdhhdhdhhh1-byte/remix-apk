@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { aiClient } from "@/lib/ai/ai.client";
 
 /** Arabic script detection — used when the provider omits a language. */
 function detectLanguage(text: string, hint?: string): string {
@@ -20,8 +21,7 @@ export const Route = createFileRoute("/api/nico/transcribe")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env.LOVABLE_API_KEY;
-        if (!apiKey) return new Response("AI gateway not configured", { status: 500 });
+        if (!aiClient.isConfigured()) return new Response("AI provider not configured", { status: 500 });
 
         const form = await request.formData();
         const audio = form.get("audio");
@@ -42,19 +42,11 @@ export const Route = createFileRoute("/api/nico/transcribe")({
             ? Number(rawDuration)
             : undefined;
 
-        const upstream = new FormData();
-        upstream.append("model", "openai/gpt-4o-mini-transcribe");
-        upstream.append("file", audio, "recording.wav");
-        upstream.append(
-          "prompt",
-          "المتحدث قد يستخدم العربية الفصحى أو لهجة خليجية أو مصرية أو شامية، وقد يخلط كلمات إنجليزية. اكتب النص كما نُطق.",
-        );
-        if (hint) upstream.append("language", hint);
-
-        const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${apiKey}` },
-          body: upstream,
+        const res = await aiClient.transcribe({
+          file: audio,
+          language: hint,
+          prompt:
+            "المتحدث قد يستخدم العربية الفصحى أو لهجة خليجية أو مصرية أو شامية، وقد يخلط كلمات إنجليزية. اكتب النص كما نُطق.",
         });
 
         if (!res.ok) {

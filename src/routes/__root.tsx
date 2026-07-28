@@ -10,7 +10,13 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+
+function logRuntimeError(error: unknown, context: Record<string, unknown> = {}) {
+  // Independent logging hook. Wire this to Sentry / Datadog / your own
+  // backend if you need remote reporting.
+  if (typeof window === "undefined") return;
+  console.error("[runtime]", { error, ...context });
+}
 
 function NotFoundComponent() {
   return (
@@ -38,7 +44,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    logRuntimeError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { aiClient } from "@/lib/ai/ai.client";
 
 const BodySchema = z.object({
   text: z.string().min(1).max(4000),
@@ -12,31 +13,22 @@ export const Route = createFileRoute("/api/nico/speak")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env.LOVABLE_API_KEY;
-        if (!apiKey) return new Response("AI gateway not configured", { status: 500 });
+        if (!aiClient.isConfigured()) return new Response("AI provider not configured", { status: 500 });
 
         const raw = await request.json().catch(() => null);
         const parsed = BodySchema.safeParse(raw);
         if (!parsed.success) return new Response("Invalid speech request", { status: 400 });
         const { text, voice, speed, instructions } = parsed.data;
 
-        const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-4o-mini-tts",
-            input: text.slice(0, 3000),
-            voice: voice || "alloy",
-            speed: speed ?? 1,
-            instructions:
-              instructions ||
-              "Speak warmly and naturally, like a friendly personal assistant talking to a friend.",
-            stream_format: "sse",
-            response_format: "pcm",
-          }),
+        const res = await aiClient.speak({
+          text,
+          voice,
+          speed,
+          instructions:
+            instructions ||
+            "Speak warmly and naturally, like a friendly personal assistant talking to a friend.",
+          streaming: true,
+          format: "pcm",
         });
 
         if (!res.ok || !res.body) {
