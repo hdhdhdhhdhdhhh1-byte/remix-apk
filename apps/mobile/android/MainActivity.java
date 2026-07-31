@@ -2,6 +2,7 @@ package com.nico.ai;
 
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
+import com.nico.ai.NicoVoiceServicePlugin;
 
 /**
  * انسخ هذا الملف فوق

@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import android.app.Service
 import android.content.pm.ServiceInfo
+import com.nico.ai.R
 
 /**
  * VoiceBackgroundService — يبقي نيكو حاضراً.

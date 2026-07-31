@@ -45,16 +45,21 @@ jobs:
 
     - name: Add Kotlin support to build.gradle
       run: |
-        # إضافة إضافة Kotlin في أعلى الملف
-        sed -i "1i apply plugin: 'kotlin-android'" android/app/build.gradle
-        # إضافة dependency Kotlin
-        sed -i "/dependencies {/a \    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'" android/app/build.gradle
-        # إضافة مستودع mavenCentral إن لم يكن موجوداً
-        if ! grep -q 'mavenCentral()' android/build.gradle; then
+        # Main build.gradle
+        if ! grep -q "kotlin-gradle-plugin" android/build.gradle; then
+          sed -i "/dependencies {/a \        classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22\"" android/build.gradle
+        fi
+        if ! grep -q "mavenCentral()" android/build.gradle; then
           sed -i "/repositories {/a \        mavenCentral()" android/build.gradle
         fi
-        # إضافة classpath Kotlin في build.gradle الرئيسي
-        sed -i "/dependencies {/a \        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'" android/build.gradle
+        
+        # app/build.gradle
+        if ! grep -q "kotlin-android" android/app/build.gradle; then
+          sed -i "1i apply plugin: 'kotlin-android'" android/app/build.gradle
+        fi
+        if ! grep -q "kotlin-stdlib" android/app/build.gradle; then
+          sed -i "/dependencies {/a \    implementation \"org.jetbrains.kotlin:kotlin-stdlib:1.9.22\"" android/app/build.gradle
+        fi
 
     - name: Fix AndroidManifest
       run: |
@@ -66,10 +71,17 @@ jobs:
             <uses-permission android:name="android.permission.READ_CONTACTS" />
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+            <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-            <uses-permission android:name="android.permission.WAKE_LOCK" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+            <uses-permission android:name="android.permission.READ_CALENDAR" />
             <application
                 android:allowBackup="true"
                 android:icon="@mipmap/ic_launcher"
