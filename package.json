@@ -15,7 +15,7 @@
     "mobile:build": "vite build && cap sync android",
     "mobile:open": "cap open android",
     "mobile:run": "cap run android",
-    "mobile:init": "npx cap add android && node -e \"console.log('انسخ apps/mobile/android/*.kt و MainActivity.java إلى android/app/src/main/java/com/nico/ai/ ثم أضف صلاحيات AndroidManifest.additions.xml')\""
+    "mobile:init": "npx cap add android && mkdir -p android/app/src/main/java/com/nico/ai/ && cp apps/mobile/android/*.kt android/app/src/main/java/com/nico/ai/ && cp apps/mobile/android/*.java android/app/src/main/java/com/nico/ai/ && echo 'الرجاء دمج AndroidManifest.additions.xml يدوياً في AndroidManifest.xml'"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
@@ -25,6 +25,7 @@
     "@capacitor/local-notifications": "^8.2.1",
     "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/status-bar": "^8.0.3",
+    "@capacitor-community/contacts": "^7.0.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

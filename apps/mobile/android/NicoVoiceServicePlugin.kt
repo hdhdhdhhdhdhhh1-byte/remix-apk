@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.os.Build
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
@@ -69,5 +70,15 @@ class NicoVoiceServicePlugin : Plugin() {
     @PluginMethod
     fun isRunning(call: PluginCall) {
         call.resolve(JSObject().put("running", VoiceBackgroundService.isRunning))
+    }
+
+    @PluginMethod
+    fun setVolume(call: PluginCall) {
+        val level = call.getDouble("level") ?: 0.5
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val targetVolume = (level * maxVolume).toInt()
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, targetVolume, 0)
+        call.resolve()
     }
 }

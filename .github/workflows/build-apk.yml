@@ -30,11 +30,8 @@ jobs:
     - name: Install dependencies
       run: npm install --legacy-peer-deps
 
-    - name: Create web assets
-      run: |
-        mkdir -p .output/public
-        echo '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nico AI</title><link rel="icon" href="/favicon.ico"></head><body><div id="root"></div><script type="module" src="/assets/main.js"></script></body></html>' > .output/public/index.html
-        cp public/favicon.ico .output/public/ 2>/dev/null || true
+    - name: Build web app
+      run: npm run build
 
     - name: Add Android platform
       run: npx cap add android
@@ -66,6 +63,7 @@ jobs:
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+            <uses-permission android:name="android.permission.READ_CONTACTS" />
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

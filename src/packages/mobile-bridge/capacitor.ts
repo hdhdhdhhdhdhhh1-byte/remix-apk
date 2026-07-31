@@ -37,6 +37,7 @@ interface NativeVoiceServicePlugin {
   start(options: { wakeWord?: string; foregroundText?: string }): Promise<{ running: boolean }>;
   stop(): Promise<void>;
   isRunning(): Promise<{ running: boolean }>;
+  setVolume(options: { level: number }): Promise<void>;
 }
 
 function voiceServicePlugin(): NativeVoiceServicePlugin | undefined {
@@ -146,8 +147,21 @@ class CapacitorPhoneActions implements PhoneActionsBridge {
     }
   }
   async pickContact() {
-    // Contact picking requires a dedicated native plugin; not enabled yet.
-    return null;
+    try {
+      const { Contacts } = await import("@capacitor-community/contacts");
+      const res = await Contacts.pickContact({
+        projection: {
+          name: true,
+          phones: true,
+        },
+      });
+      return {
+        name: res.contact.displayName || "Unknown",
+        number: res.contact.phones?.[0]?.number,
+      };
+    } catch {
+      return null;
+    }
   }
 }
 
@@ -164,8 +178,12 @@ class CapacitorAppControl implements AppControlBridge {
   async openUrl(url: string) {
     if (typeof window !== "undefined") window.open(url, "_blank", "noopener");
   }
-  async setVolume() {
-    /* requires a native audio plugin */
+  async setVolume(level: number) {
+    try {
+      await voiceServicePlugin()?.setVolume({ level });
+    } catch {
+      /* fail silently if plugin not registered */
+    }
   }
 }
 

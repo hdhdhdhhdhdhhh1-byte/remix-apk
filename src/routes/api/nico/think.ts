@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { aiClient, type ChatOptions } from "@/lib/ai/ai.server";
+import { nicoRateLimiter } from "@/lib/rate-limit.server";
 
 const SYSTEM = `أنت "نيكو"، مساعد شخصي صوتي.
 - تتحدث بالعربية بلهجة طبيعية وودودة، وبالإنجليزية إذا خاطبك المستخدم بها.
@@ -23,6 +24,15 @@ export const Route = createFileRoute("/api/nico/think")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const ip = request.headers.get("x-forwarded-for") || "anonymous";
+        const decision = nicoRateLimiter.check(ip);
+        if (!decision.allowed) {
+          return new Response("Too many requests", {
+            status: 429,
+            headers: { "Retry-After": Math.ceil(decision.retryAfterMs / 1000).toString() },
+          });
+        }
+
         if (!aiClient.isConfigured())
           return new Response("AI provider not configured", { status: 500 });
 

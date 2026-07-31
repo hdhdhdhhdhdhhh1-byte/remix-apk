@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { aiClient } from "@/lib/ai/ai.server";
+import { nicoRateLimiter } from "@/lib/rate-limit.server";
 
 const BodySchema = z.object({
   text: z.string().min(1).max(4000),
@@ -13,6 +14,15 @@ export const Route = createFileRoute("/api/nico/speak")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const ip = request.headers.get("x-forwarded-for") || "anonymous";
+        const decision = nicoRateLimiter.check(ip);
+        if (!decision.allowed) {
+          return new Response("Too many requests", {
+            status: 429,
+            headers: { "Retry-After": Math.ceil(decision.retryAfterMs / 1000).toString() },
+          });
+        }
+
         if (!aiClient.isConfigured())
           return new Response("AI provider not configured", { status: 500 });
 
