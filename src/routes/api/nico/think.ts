@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { aiClient, type ChatOptions } from "@/lib/ai/ai.client";
+import { aiClient, type ChatOptions } from "@/lib/ai/ai.server";
 
 const SYSTEM = `أنت "نيكو"، مساعد شخصي صوتي.
 - تتحدث بالعربية بلهجة طبيعية وودودة، وبالإنجليزية إذا خاطبك المستخدم بها.
