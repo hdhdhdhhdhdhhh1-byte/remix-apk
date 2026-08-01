@@ -1,24 +1,113 @@
-name: Build APK
-on: [push]
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v5
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-      - run: npm install --legacy-peer-deps
-      - run: echo "VITE_DUMMY=1" >.env
-      - run: npm run build || npx vite build
-      - run: npx cap add android || true
-      - run: npx cap sync android
-      - run: cd android && chmod +x gradlew &&./gradlew assembleDebug --stacktrace
-      - uses: actions/upload-artifact@v5
-        with:
-          name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build web app
+      run: |
+        mkdir -p .output/public
+        echo '<!DOCTYPE html><html lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nico AI</title><link rel="icon" href="/favicon.ico"><script type="module" crossorigin src="/assets/main.js"></script><link rel="stylesheet" crossorigin href="/assets/main.css"></head><body><div id="root"></div></body></html>' > .output/public/index.html
+        cp public/favicon.ico .output/public/
+
+    - name: Sync Capacitor
+      run: npx cap sync android
+
+    - name: Copy custom Android files
+      run: |
+        mkdir -p android/app/src/main/java/com/nico/ai/
+        cp apps/mobile/android/VoiceBackgroundService.kt android/app/src/main/java/com/nico/ai/
+        cp apps/mobile/android/NicoVoiceServicePlugin.kt android/app/src/main/java/com/nico/ai/
+        cp apps/mobile/android/MainActivity.java android/app/src/main/java/com/nico/ai/
+
+    - name: Fix AndroidManifest
+      run: |
+        cat > android/app/src/main/AndroidManifest.xml << 'MANIFEST'
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+            <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+            <uses-permission android:name="android.permission.READ_CALENDAR" />
+            <application
+                android:allowBackup="true"
+                android:icon="@mipmap/ic_launcher"
+                android:label="Nico AI"
+                android:roundIcon="@mipmap/ic_launcher_round"
+                android:supportsRtl="true"
+                android:theme="@style/AppTheme"
+                android:usesCleartextTraffic="true">
+                <activity
+                    android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+                    android:name="com.nico.ai.MainActivity"
+                    android:label="Nico AI"
+                    android:theme="@style/AppTheme.NoActionBarLaunch"
+                    android:launchMode="singleTask"
+                    android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+                <service
+                    android:name=".VoiceBackgroundService"
+                    android:exported="false"
+                    android:foregroundServiceType="microphone" />
+                <provider
+                    android:name="androidx.core.content.FileProvider"
+                    android:authorities="${applicationId}.fileprovider"
+                    android:exported="false"
+                    android:grantUriPermissions="true">
+                    <meta-data
+                        android:name="android.support.FILE_PROVIDER_PATHS"
+                        android:resource="@xml/file_paths" />
+                </provider>
+            </application>
+        </manifest>
+        MANIFEST
+
+    - name: Build APK
+      run: cd android && ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Nico-AI-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk
