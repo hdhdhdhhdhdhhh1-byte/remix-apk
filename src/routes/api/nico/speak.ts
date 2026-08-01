@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { aiClient } from "@/lib/ai/ai.client";
+import { aiClient } from "@/lib/ai/ai.server";
 
 const BodySchema = z.object({
   text: z.string().min(1).max(4000),
