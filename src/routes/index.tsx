@@ -55,7 +55,10 @@ function NicoHome() {
   }, [showWelcome, nico.runtime, nico.voiceProfile.language]);
 
   return (
-    <main dir="rtl" className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-5 py-10">
+    <main
+      dir="rtl"
+      className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-5 py-10"
+    >
       {showWelcome && (
         <WelcomeExperience
           isAuthenticated={nico.isAuthenticated}
@@ -121,7 +124,9 @@ function NicoHome() {
 
         <button
           type="button"
-          onClick={() => (nico.continuous ? nico.stopConversation() : void nico.startConversation())}
+          onClick={() =>
+            nico.continuous ? nico.stopConversation() : void nico.startConversation()
+          }
           className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
             nico.continuous
               ? "border-accent/50 bg-accent/15 text-accent"

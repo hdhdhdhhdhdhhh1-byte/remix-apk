@@ -1,8 +1,4 @@
-import type {
-  MemoryImportance,
-  MemoryKind,
-  MemoryRetention,
-} from "../shared/types";
+import type { MemoryImportance, MemoryKind, MemoryRetention } from "../shared/types";
 
 export interface MemoryAnalysis {
   /** True when the utterance carries information worth remembering. */
@@ -42,7 +38,13 @@ export class MemoryIntelligence {
   analyze(utterance: string): MemoryAnalysis {
     const text = utterance.trim();
     if (!text) {
-      return { shouldConsider: false, needsConfirmation: false, importance: "low", retention: "session", reason: "empty" };
+      return {
+        shouldConsider: false,
+        needsConfirmation: false,
+        importance: "low",
+        retention: "session",
+        reason: "empty",
+      };
     }
 
     // 1. Direct profile signals — silent save.

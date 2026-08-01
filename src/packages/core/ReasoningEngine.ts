@@ -12,7 +12,11 @@ export interface ReasoningInput {
 export interface ReasoningOutput {
   speech: string;
   intent: IntentName | null;
-  memories: { key: string; value: string; kind: "profile" | "preference" | "habit" | "fact" | "event" }[];
+  memories: {
+    key: string;
+    value: string;
+    kind: "profile" | "preference" | "habit" | "fact" | "event";
+  }[];
 }
 
 /**

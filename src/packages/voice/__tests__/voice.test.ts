@@ -97,7 +97,10 @@ describe("VoiceActivityDetector", () => {
 
   it("times out when nobody speaks", () => {
     const seen: string[] = [];
-    const vad = new VoiceActivityDetector({ startTimeoutMs: 1000, onSpeechEnd: (r) => seen.push(r) });
+    const vad = new VoiceActivityDetector({
+      startTimeoutMs: 1000,
+      onSpeechEnd: (r) => seen.push(r),
+    });
     vad.push(0, 0);
     vad.push(0, 1200);
     expect(seen).toEqual(["timeout"]);

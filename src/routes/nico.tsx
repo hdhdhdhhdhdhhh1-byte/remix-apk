@@ -110,7 +110,9 @@ function VoiceFirst() {
 
         <button
           type="button"
-          onClick={() => (nico.continuous ? nico.stopConversation() : void nico.startConversation())}
+          onClick={() =>
+            nico.continuous ? nico.stopConversation() : void nico.startConversation()
+          }
           className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
             nico.continuous
               ? "border-accent/50 bg-accent/15 text-accent"
@@ -121,9 +123,7 @@ function VoiceFirst() {
         </button>
 
         <div className="min-h-24 w-full space-y-3 text-center">
-          {lastUser && (
-            <p className="text-sm text-muted-foreground">«{lastUser.content}»</p>
-          )}
+          {lastUser && <p className="text-sm text-muted-foreground">«{lastUser.content}»</p>}
           {lastNico && (
             <p className="text-balance text-lg leading-relaxed text-foreground">
               {lastNico.content}

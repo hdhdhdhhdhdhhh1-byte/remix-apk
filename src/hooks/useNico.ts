@@ -21,7 +21,6 @@ import { derivePresence, type AssistantPresence } from "@/packages/voice/Assista
 import { NICO_AUTO_GREETING, NICO_PHRASES, humanize } from "@/packages/core/personality";
 import { mobileBridge } from "@/packages/mobile-bridge";
 
-
 /** Metadata captured for each spoken message. */
 export interface VoiceMetadata {
   language: string;
@@ -43,14 +42,13 @@ export function useNico() {
     return { permissions, memory, skills, brain, voice };
   }, []);
 
-
   const [state, setState] = useState<VoiceState>("idle");
   const [level, setLevel] = useState(0);
   const [turns, setTurns] = useState<ConversationTurn[]>([]);
   const [memories, setMemories] = useState<MemoryRecord[]>([]);
   const [tasks, setTasks] = useState<ReminderTask[]>([]);
-  const [permissions, setPermissions] = useState<Record<PermissionKey, PermissionState>>(
-    () => runtime.permissions.snapshot(),
+  const [permissions, setPermissions] = useState<Record<PermissionKey, PermissionState>>(() =>
+    runtime.permissions.snapshot(),
   );
   const [error, setError] = useState<string | null>(null);
   const [lastIntent, setLastIntent] = useState<string | null>(null);
@@ -84,7 +82,6 @@ export function useNico() {
     if (!signedInRef.current) return;
     void nicoSync.logEvent({ event_type, detail }).catch(() => {});
   }, []);
-
 
   // Auth state + initial bootstrap from Supabase.
   useEffect(() => {
@@ -208,7 +205,6 @@ export function useNico() {
     }
     void hydrate();
 
-
     const flush = window.setInterval(() => {
       if (!signedInRef.current) return;
       const pending = pendingSessionsRef.current.splice(0);
@@ -302,9 +298,7 @@ export function useNico() {
         const status = await runtime.permissions.ensure(needed);
         logEvent("permission_request", `${needed}:${status}`);
         if (signedInRef.current) {
-          void nicoSync
-            .saveDevicePermission({ permission: needed, status })
-            .catch(() => {});
+          void nicoSync.saveDevicePermission({ permission: needed, status }).catch(() => {});
         }
       }
 
@@ -404,7 +398,6 @@ export function useNico() {
     stopListeningRef.current = stopListening;
     startListeningRef.current = startListening;
   }, [stopListening, startListening]);
-
 
   // Voice activity detection ends the utterance without a button press.
   useEffect(() => {
@@ -509,17 +502,11 @@ export function useNico() {
     return () => {
       off();
     };
-
   }, [runtime, logEvent]);
 
   const presence: AssistantPresence = derivePresence(state, {
     wakeWordArmed: wakeArmed && !continuous,
   });
-
-
-
-
-
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();

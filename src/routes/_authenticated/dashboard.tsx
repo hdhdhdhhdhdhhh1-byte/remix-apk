@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -89,22 +95,57 @@ function Dashboard() {
 
       <Tabs defaultValue="overview" className="mt-6">
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-secondary/40 p-1">
-          <TabsTrigger value="overview" className="gap-1"><Activity className="h-4 w-4" />نظرة عامة</TabsTrigger>
-          <TabsTrigger value="memory" className="gap-1"><Database className="h-4 w-4" />ذاكرتي</TabsTrigger>
-          <TabsTrigger value="personality" className="gap-1"><Sparkles className="h-4 w-4" />الشخصية</TabsTrigger>
-          <TabsTrigger value="conversations" className="gap-1"><MessageCircle className="h-4 w-4" />المحادثات</TabsTrigger>
-          <TabsTrigger value="learning" className="gap-1"><Brain className="h-4 w-4" />ما تعلّمه</TabsTrigger>
-          <TabsTrigger value="identity" className="gap-1"><Heart className="h-4 w-4" />من نيكو؟</TabsTrigger>
-          <TabsTrigger value="privacy" className="gap-1"><Shield className="h-4 w-4" />الخصوصية</TabsTrigger>
+          <TabsTrigger value="overview" className="gap-1">
+            <Activity className="h-4 w-4" />
+            نظرة عامة
+          </TabsTrigger>
+          <TabsTrigger value="memory" className="gap-1">
+            <Database className="h-4 w-4" />
+            ذاكرتي
+          </TabsTrigger>
+          <TabsTrigger value="personality" className="gap-1">
+            <Sparkles className="h-4 w-4" />
+            الشخصية
+          </TabsTrigger>
+          <TabsTrigger value="conversations" className="gap-1">
+            <MessageCircle className="h-4 w-4" />
+            المحادثات
+          </TabsTrigger>
+          <TabsTrigger value="learning" className="gap-1">
+            <Brain className="h-4 w-4" />
+            ما تعلّمه
+          </TabsTrigger>
+          <TabsTrigger value="identity" className="gap-1">
+            <Heart className="h-4 w-4" />
+            من نيكو؟
+          </TabsTrigger>
+          <TabsTrigger value="privacy" className="gap-1">
+            <Shield className="h-4 w-4" />
+            الخصوصية
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="mt-4"><OverviewTab nico={nico} /></TabsContent>
-        <TabsContent value="memory" className="mt-4"><MemoryTab nico={nico} /></TabsContent>
-        <TabsContent value="personality" className="mt-4"><PersonalityTab nico={nico} /></TabsContent>
-        <TabsContent value="conversations" className="mt-4"><ConversationsTab /></TabsContent>
-        <TabsContent value="learning" className="mt-4"><LearningTab /></TabsContent>
-        <TabsContent value="identity" className="mt-4"><IdentityTab nico={nico} /></TabsContent>
-        <TabsContent value="privacy" className="mt-4"><PrivacyTab nico={nico} /></TabsContent>
+        <TabsContent value="overview" className="mt-4">
+          <OverviewTab nico={nico} />
+        </TabsContent>
+        <TabsContent value="memory" className="mt-4">
+          <MemoryTab nico={nico} />
+        </TabsContent>
+        <TabsContent value="personality" className="mt-4">
+          <PersonalityTab nico={nico} />
+        </TabsContent>
+        <TabsContent value="conversations" className="mt-4">
+          <ConversationsTab />
+        </TabsContent>
+        <TabsContent value="learning" className="mt-4">
+          <LearningTab />
+        </TabsContent>
+        <TabsContent value="identity" className="mt-4">
+          <IdentityTab nico={nico} />
+        </TabsContent>
+        <TabsContent value="privacy" className="mt-4">
+          <PrivacyTab nico={nico} />
+        </TabsContent>
       </Tabs>
     </main>
   );
@@ -123,8 +164,12 @@ function DashHeader({ email, onSignOut }: { email: string | null; onSignOut: () 
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← العودة لنيكو</Link>
-        <Button variant="outline" size="sm" onClick={onSignOut}>خروج</Button>
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+          ← العودة لنيكو
+        </Link>
+        <Button variant="outline" size="sm" onClick={onSignOut}>
+          خروج
+        </Button>
       </div>
     </header>
   );
@@ -143,7 +188,9 @@ function OverviewTab({ nico }: { nico: ReturnType<typeof useNico> }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Card>
-        <CardHeader><CardTitle className="text-base">حالة نيكو</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">حالة نيكو</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <Row label="الحالة" value={<Badge variant="secondary">{nico.state}</Badge>} />
           <Row label="آخر نية" value={nico.lastIntent ?? "—"} />
@@ -153,7 +200,9 @@ function OverviewTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">ملفك الشخصي</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">ملفك الشخصي</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <Row label="الاسم" value={nico.profile.preferredName ?? nico.profile.name ?? "—"} />
           <Row label="اللغة" value={nico.profile.locale === "ar" ? "العربية" : "English"} />
@@ -163,7 +212,9 @@ function OverviewTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">ملخص الذاكرة</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">ملخص الذاكرة</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <Row label="إجمالي" value={String(nico.memories.length)} />
           {(Object.keys(KIND_LABELS) as Kind[]).map((k) => (
@@ -173,16 +224,23 @@ function OverviewTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">آخر النشاط</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">آخر النشاط</CardTitle>
+        </CardHeader>
         <CardContent>
           {nico.turns.length ? (
             <ul className="space-y-2 text-sm">
-              {nico.turns.slice(-5).reverse().map((t) => (
-                <li key={t.id} className="rounded-lg bg-secondary/50 px-3 py-2">
-                  <span className="text-xs text-muted-foreground">{t.role === "user" ? "أنت" : "نيكو"}: </span>
-                  {t.content}
-                </li>
-              ))}
+              {nico.turns
+                .slice(-5)
+                .reverse()
+                .map((t) => (
+                  <li key={t.id} className="rounded-lg bg-secondary/50 px-3 py-2">
+                    <span className="text-xs text-muted-foreground">
+                      {t.role === "user" ? "أنت" : "نيكو"}:{" "}
+                    </span>
+                    {t.content}
+                  </li>
+                ))}
             </ul>
           ) : (
             <p className="text-sm text-muted-foreground">لا نشاط بعد.</p>
@@ -242,11 +300,15 @@ function MemoryTab({ nico }: { nico: ReturnType<typeof useNico> }) {
               />
             </div>
             <Select value={kindFilter} onValueChange={(v) => setKindFilter(v as Kind | "all")}>
-              <SelectTrigger className="sm:w-56"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="sm:w-56">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">كل الفئات</SelectItem>
                 {(Object.keys(KIND_LABELS) as Kind[]).map((k) => (
-                  <SelectItem key={k} value={k}>{KIND_LABELS[k]}</SelectItem>
+                  <SelectItem key={k} value={k}>
+                    {KIND_LABELS[k]}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -315,10 +377,14 @@ function MemoryItem({
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button size="sm" variant="ghost">تعديل</Button>
+          <Button size="sm" variant="ghost">
+            تعديل
+          </Button>
         </DialogTrigger>
         <DialogContent dir="rtl">
-          <DialogHeader><DialogTitle>تعديل الذاكرة</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>تعديل الذاكرة</DialogTitle>
+          </DialogHeader>
           <div className="space-y-3">
             <div>
               <Label>المفتاح</Label>
@@ -329,7 +395,9 @@ function MemoryItem({
               <Textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                إلغاء
+              </Button>
               <Button
                 onClick={async () => {
                   await onEdit({ content, key });
@@ -368,15 +436,19 @@ function PersonalityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
     (p.preferences.responseTone as "simple" | "emotional" | "formal") ?? "simple",
   );
   const [personaTrait, setPersonaTrait] = useState<string>(
-    p.personality.traits.find((t) =>
-      ["friendly", "professional", "funny", "calm"].includes(t),
-    ) ?? "friendly",
+    p.personality.traits.find((t) => ["friendly", "professional", "funny", "calm"].includes(t)) ??
+      "friendly",
   );
 
   const save = async () => {
-    const traits = Array.from(new Set([...p.personality.traits.filter(
-      (t) => !["friendly", "professional", "funny", "calm"].includes(t),
-    ), personaTrait]));
+    const traits = Array.from(
+      new Set([
+        ...p.personality.traits.filter(
+          (t) => !["friendly", "professional", "funny", "calm"].includes(t),
+        ),
+        personaTrait,
+      ]),
+    );
     nico.updateProfile({
       preferredName: name || undefined,
       communicationStyle: style,
@@ -388,7 +460,9 @@ function PersonalityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
 
   return (
     <Card>
-      <CardHeader><CardTitle className="text-base">تخصيص شخصية نيكو</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle className="text-base">تخصيص شخصية نيكو</CardTitle>
+      </CardHeader>
       <CardContent className="space-y-5">
         <div>
           <Label>الاسم الذي تحب أن يناديك به نيكو</Label>
@@ -456,7 +530,9 @@ function PersonalityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
         <div className="space-y-2">
           <Label>النغمة العامة</Label>
           <Select value={tone} onValueChange={(v) => setTone(v as typeof tone)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="friendly">ودودة</SelectItem>
               <SelectItem value="formal">رسمية</SelectItem>
@@ -477,7 +553,13 @@ function PersonalityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
  * 4. Conversations
  * ========================================================== */
 type ConvRow = { id: string; title: string | null; created_at: string; updated_at: string };
-type MsgRow = { id: string; role: "user" | "nico"; content: string; intent: string | null; created_at: string };
+type MsgRow = {
+  id: string;
+  role: "user" | "nico";
+  content: string;
+  intent: string | null;
+  created_at: string;
+};
 
 function ConversationsTab() {
   const [items, setItems] = useState<ConvRow[]>([]);
@@ -496,7 +578,9 @@ function ConversationsTab() {
     }
   }, []);
 
-  useEffect(() => { void reload(); }, [reload]);
+  useEffect(() => {
+    void reload();
+  }, [reload]);
 
   const filtered = items.filter(
     (c) => !q.trim() || (c.title ?? "").toLowerCase().includes(q.toLowerCase()),
@@ -510,7 +594,9 @@ function ConversationsTab() {
 
   return (
     <Card>
-      <CardHeader><CardTitle className="text-base">محادثاتك السابقة</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle className="text-base">محادثاتك السابقة</CardTitle>
+      </CardHeader>
       <CardContent className="space-y-3">
         <div className="relative">
           <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -540,7 +626,9 @@ function ConversationsTab() {
                     آخر تحديث {new Date(c.updated_at).toLocaleString("ar")}
                   </div>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => openConv(c)}>فتح</Button>
+                <Button size="sm" variant="ghost" onClick={() => openConv(c)}>
+                  فتح
+                </Button>
               </li>
             ))}
           </ul>
@@ -561,13 +649,16 @@ function ConversationsTab() {
                     }`}
                   >
                     <div className="mb-1 text-xs text-muted-foreground">
-                      {m.role === "user" ? "أنت" : "نيكو"} · {new Date(m.created_at).toLocaleTimeString("ar")}
+                      {m.role === "user" ? "أنت" : "نيكو"} ·{" "}
+                      {new Date(m.created_at).toLocaleTimeString("ar")}
                     </div>
                     {m.content}
                   </div>
                 ))}
                 {messages.length === 0 && (
-                  <p className="text-center text-sm text-muted-foreground">لا رسائل في هذه المحادثة.</p>
+                  <p className="text-center text-sm text-muted-foreground">
+                    لا رسائل في هذه المحادثة.
+                  </p>
                 )}
               </div>
             </ScrollArea>
@@ -604,7 +695,9 @@ function LearningTab() {
     }
   }, []);
 
-  useEffect(() => { void reload(); }, [reload]);
+  useEffect(() => {
+    void reload();
+  }, [reload]);
 
   const remove = async (id: string) => {
     await nicoSync.deleteLearning(id);
@@ -614,7 +707,9 @@ function LearningTab() {
 
   return (
     <Card>
-      <CardHeader><CardTitle className="text-base">ما تعلّمه نيكو عنك</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle className="text-base">ما تعلّمه نيكو عنك</CardTitle>
+      </CardHeader>
       <CardContent>
         {loading ? (
           <p className="py-6 text-center text-sm text-muted-foreground">جاري التحميل…</p>
@@ -661,12 +756,13 @@ function IdentityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader><CardTitle className="text-base">من هو نيكو؟</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">من هو نيكو؟</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-3 text-sm leading-relaxed">
           <p>
-            نيكو مساعدك الشخصي الذي يعرفك ويتذكّرك. شخصيته ثابتة: ودود، مهذّب،
-            محترم، ومختصر في ردوده لأنه يتحدّث إليك صوتياً. يتكيّف مع أسلوبك
-            دون أن يفقد هويّته.
+            نيكو مساعدك الشخصي الذي يعرفك ويتذكّرك. شخصيته ثابتة: ودود، مهذّب، محترم، ومختصر في
+            ردوده لأنه يتحدّث إليك صوتياً. يتكيّف مع أسلوبك دون أن يفقد هويّته.
           </p>
           <p className="text-muted-foreground">
             كل ما يتعلّمه عنك يبقى ملكك — تستطيع مراجعته وتعديله وحذفه في أي وقت.
@@ -675,7 +771,9 @@ function IdentityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">القدرات والمهارات</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">القدرات والمهارات</CardTitle>
+        </CardHeader>
         <CardContent>
           <div className="grid gap-2 sm:grid-cols-2">
             {nico.skills.map((s) => (
@@ -690,12 +788,15 @@ function IdentityTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">حالة الذاكرة والخصوصية</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">حالة الذاكرة والخصوصية</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <Row label="ذكريات محفوظة" value={String(nico.memories.length)} />
-          <Row label="الأذونات النشطة" value={
-            String(Object.values(nico.permissions).filter((p) => p === "granted").length)
-          } />
+          <Row
+            label="الأذونات النشطة"
+            value={String(Object.values(nico.permissions).filter((p) => p === "granted").length)}
+          />
           <Separator className="my-2" />
           <p className="text-xs text-muted-foreground">
             جميع بياناتك محميّة عبر سياسات RLS ومرتبطة بحسابك وحده.
@@ -768,7 +869,9 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader><CardTitle className="text-base">التحكم في الذاكرة</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">التحكم في الذاكرة</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -788,7 +891,8 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
               <p className="text-xs text-muted-foreground">تنزيل ملف JSON بكل ما يعرفه نيكو عنك.</p>
             </div>
             <Button variant="outline" onClick={exportAll} disabled={busy}>
-              <Download className="ml-2 h-4 w-4" />تصدير
+              <Download className="ml-2 h-4 w-4" />
+              تصدير
             </Button>
           </div>
 
@@ -797,7 +901,9 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
           <div className="flex items-center justify-between gap-3">
             <div>
               <Label className="text-sm">مسح كل الذكريات</Label>
-              <p className="text-xs text-muted-foreground">حذف كل ما تعلّمه نيكو عنك، مع إبقاء الحساب.</p>
+              <p className="text-xs text-muted-foreground">
+                حذف كل ما تعلّمه نيكو عنك، مع إبقاء الحساب.
+              </p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -821,7 +927,9 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base text-destructive">حذف الحساب</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base text-destructive">حذف الحساب</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
             سيتم حذف حسابك وكل البيانات المرتبطة به نهائياً.
@@ -829,7 +937,8 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={busy}>
-                <Trash2 className="ml-2 h-4 w-4" />حذف حسابي نهائياً
+                <Trash2 className="ml-2 h-4 w-4" />
+                حذف حسابي نهائياً
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent dir="rtl">
@@ -841,7 +950,10 @@ function PrivacyTab({ nico }: { nico: ReturnType<typeof useNico> }) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                <AlertDialogAction onClick={deleteAcc} className="bg-destructive text-destructive-foreground">
+                <AlertDialogAction
+                  onClick={deleteAcc}
+                  className="bg-destructive text-destructive-foreground"
+                >
                   حذف نهائي
                 </AlertDialogAction>
               </AlertDialogFooter>

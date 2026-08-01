@@ -71,7 +71,8 @@ var VIEWPORT_NAME = "ScrollAreaViewport";
 var ScrollAreaViewport = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function ScrollAreaViewport2(props, forwardedRef) {
 	const { __scopeScrollArea, children, nonce, ...viewportProps } = props;
 	const context = useScrollAreaContext(VIEWPORT_NAME, __scopeScrollArea);
-	const composedRefs = useComposedRefs(forwardedRef, import_react.useRef(null), context.onViewportChange);
+	const ref = import_react.useRef(null);
+	const composedRefs = useComposedRefs(forwardedRef, ref, context.onViewportChange);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollAreaViewportStyle, { nonce }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
 		"data-radix-scroll-area-viewport": "",
 		...viewportProps,
@@ -635,7 +636,8 @@ function getThumbOffsetFromScroll(scrollPos, sizes, dir = "ltr") {
 	const scrollbar = sizes.scrollbar.size - scrollbarPadding;
 	const maxScrollPos = sizes.content - sizes.viewport;
 	const maxThumbPos = scrollbar - thumbSizePx;
-	const scrollWithoutMomentum = clamp(scrollPos, dir === "ltr" ? [0, maxScrollPos] : [maxScrollPos * -1, 0]);
+	const scrollClampRange = dir === "ltr" ? [0, maxScrollPos] : [maxScrollPos * -1, 0];
+	const scrollWithoutMomentum = clamp(scrollPos, scrollClampRange);
 	return linearScale([0, maxScrollPos], [0, maxThumbPos])(scrollWithoutMomentum);
 }
 __name(getThumbOffsetFromScroll, "getThumbOffsetFromScroll");

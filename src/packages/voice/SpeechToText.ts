@@ -120,7 +120,6 @@ export class SpeechToText {
           confidence: data.confidence,
         } satisfies TranscriptionResult;
       },
-
     };
   }
 }

@@ -57,7 +57,11 @@ export const WeatherSkill: Skill = {
       )} درجة والرياح ${Math.round(data.current.wind_speed_10m)} كم بالساعة.`;
 
       if (!wantsForecast || !data.daily) {
-        return { ok: true, speech: current, data: data.current as unknown as Record<string, unknown> };
+        return {
+          ok: true,
+          speech: current,
+          data: data.current as unknown as Record<string, unknown>,
+        };
       }
 
       const days = data.daily.time.slice(1, 4).map((iso, i) => {

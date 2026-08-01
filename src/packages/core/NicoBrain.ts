@@ -75,7 +75,9 @@ export class NicoBrain {
       if (pending) this.deps.memory.rejectPending(pending.id);
       return "تمام، ما رح أحفظها.";
     }
-    const rename = t.match(/(?:غير اسمي إلى|اسمي الجديد|change my name to)\s+([\u0600-\u06FFA-Za-z]+)/i);
+    const rename = t.match(
+      /(?:غير اسمي إلى|اسمي الجديد|change my name to)\s+([\u0600-\u06FFA-Za-z]+)/i,
+    );
     if (rename) {
       this.deps.memory.profile.update({ name: rename[1] });
       return `تمام، رح أناديك ${rename[1]}.`;
@@ -83,7 +85,9 @@ export class NicoBrain {
     const forget = t.match(/(?:انس|امسح|احذف|forget)\s+(.+)/i);
     if (forget) {
       const removed = this.deps.memory.forget(forget[1]);
-      return removed ? `نسيت ${removed} معلومة تخص "${forget[1]}".` : `ما لقيت شي محفوظ عن "${forget[1]}".`;
+      return removed
+        ? `نسيت ${removed} معلومة تخص "${forget[1]}".`
+        : `ما لقيت شي محفوظ عن "${forget[1]}".`;
     }
     return null;
   }
@@ -146,7 +150,13 @@ export class NicoBrain {
           reference,
           intent,
           decision: {
-            plan: { id: "mgmt", goal: "memory_mgmt", steps: [], requiresMemory: true, requiresPermissions: [] },
+            plan: {
+              id: "mgmt",
+              goal: "memory_mgmt",
+              steps: [],
+              requiresMemory: true,
+              requiresPermissions: [],
+            },
             executable: [],
             blocked: [],
             needsMemoryRecall: true,

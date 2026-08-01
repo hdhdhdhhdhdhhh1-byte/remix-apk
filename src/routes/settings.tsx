@@ -112,7 +112,9 @@ function SettingsPage() {
           <span className="text-xs text-muted-foreground">الاسم</span>
           <input
             defaultValue={nico.profile.preferredName ?? nico.profile.name ?? ""}
-            onBlur={(e) => nico.updateProfile({ preferredName: e.target.value.trim() || undefined })}
+            onBlur={(e) =>
+              nico.updateProfile({ preferredName: e.target.value.trim() || undefined })
+            }
             placeholder="كيف تحب أن يناديك نيكو؟"
             className="w-full rounded-2xl border border-border bg-secondary px-4 py-3 text-sm"
           />

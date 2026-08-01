@@ -400,9 +400,7 @@ var flip = function(options) {
 						if (placement) resetPlacement = placement;
 						break;
 					}
-					case "initialPlacement":
-						resetPlacement = initialPlacement;
-						break;
+					case "initialPlacement": resetPlacement = initialPlacement;
 				}
 				if (placement !== resetPlacement) return { reset: { placement: resetPlacement } };
 			}

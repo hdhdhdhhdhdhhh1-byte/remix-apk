@@ -6,7 +6,10 @@
 import { z } from "zod";
 
 export const transcribeSchema = z.object({
-  audio: z.string().min(1).max(20 * 1024 * 1024),
+  audio: z
+    .string()
+    .min(1)
+    .max(20 * 1024 * 1024),
   mime: z.string().max(64).optional(),
   language: z.enum(["ar", "en"]).default("ar"),
 });

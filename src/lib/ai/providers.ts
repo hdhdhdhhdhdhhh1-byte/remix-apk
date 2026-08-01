@@ -70,11 +70,11 @@ export async function speak(cfg: AiConfig, opts: SpeakOptions): Promise<Response
   const fs = await import("fs/promises");
   const { spawn } = await import("child_process");
   const output = `/data/data/com.termux/files/home/remix-of-90159487/nico.wav`;
-  const safe = opts.text.replace(/"/g,'').replace(/`/g,'').slice(0,400);
-  
+  const safe = opts.text.replace(/"/g, "").replace(/`/g, "").slice(0, 400);
+
   await new Promise<void>((resolve, reject) => {
     const espeak = spawn("espeak", ["-v", "ar", "-s", "125", "-w", output, safe]);
-    espeak.on("close", (code) => code === 0 ? resolve() : reject(new Error(`espeak ${code}`)));
+    espeak.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`espeak ${code}`))));
     espeak.on("error", (e) => reject(e));
   });
 

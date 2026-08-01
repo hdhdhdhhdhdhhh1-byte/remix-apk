@@ -23,7 +23,8 @@ export const Route = createFileRoute("/api/nico/think")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!aiClient.isConfigured()) return new Response("AI provider not configured", { status: 500 });
+        if (!aiClient.isConfigured())
+          return new Response("AI provider not configured", { status: 500 });
 
         const body = (await request.json().catch(() => null)) as ThinkBody | null;
         const transcript = body?.transcript?.trim();

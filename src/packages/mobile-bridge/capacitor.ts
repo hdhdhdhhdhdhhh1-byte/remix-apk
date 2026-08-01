@@ -42,7 +42,9 @@ interface NativeVoiceServicePlugin {
 function voiceServicePlugin(): NativeVoiceServicePlugin | undefined {
   if (typeof window === "undefined") return undefined;
   return (
-    window as unknown as { Capacitor?: { Plugins?: { NicoVoiceService?: NativeVoiceServicePlugin } } }
+    window as unknown as {
+      Capacitor?: { Plugins?: { NicoVoiceService?: NativeVoiceServicePlugin } };
+    }
   ).Capacitor?.Plugins?.NicoVoiceService;
 }
 

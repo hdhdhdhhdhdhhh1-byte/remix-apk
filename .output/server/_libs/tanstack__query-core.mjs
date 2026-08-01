@@ -551,7 +551,7 @@ var Removable = class {
 		}, this.gcTime);
 	}
 	updateGcTime(newGcTime) {
-		this.gcTime = Math.max(this.gcTime || 0, newGcTime ?? (environmentManager.isServer() ? Infinity : 300 * 1e3));
+		this.gcTime = Math.max(this.gcTime || 0, newGcTime ?? (environmentManager.isServer() ? Infinity : 3e5));
 	}
 	clearGcTimeout() {
 		if (this.#gcTimeout !== void 0) {

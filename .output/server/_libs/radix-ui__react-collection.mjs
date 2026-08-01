@@ -33,7 +33,8 @@ function createCollection(name) {
 	const CollectionSlotImpl = createSlot(COLLECTION_SLOT_NAME);
 	const CollectionSlot = import_react.forwardRef((props, forwardedRef) => {
 		const { scope, children } = props;
-		const composedRefs = useComposedRefs(forwardedRef, useCollectionContext(COLLECTION_SLOT_NAME, scope).collectionRef);
+		const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
+		const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
 		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CollectionSlotImpl, {
 			ref: composedRefs,
 			children
@@ -424,7 +425,8 @@ function createCollection2(name) {
 	const CollectionSlotImpl = createSlot(COLLECTION_SLOT_NAME);
 	const CollectionSlot = import_react.forwardRef((props, forwardedRef) => {
 		const { scope, children } = props;
-		const composedRefs = useComposedRefs(forwardedRef, useCollectionContext(COLLECTION_SLOT_NAME, scope).collectionRef);
+		const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
+		const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
 		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CollectionSlotImpl, {
 			ref: composedRefs,
 			children

@@ -25,9 +25,6 @@ export class ResponseEngine {
     const failed = opts.skillResults.filter((r) => !r.ok);
     if (failed.length) parts.push(NICO_PERSONALITY.apology);
 
-    return parts
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+    return parts.join(" ").replace(/\s+/g, " ").trim();
   }
 }

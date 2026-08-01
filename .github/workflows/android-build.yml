@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -24,28 +23,22 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
       - name: Build Web
         run: npm run build
 
-      - name: Prepare Capacitor Web Assets
+      - name: Verify Web Assets
         run: |
-          rm -rf dist
-          mkdir dist
-          cp -r .output/public/* dist/
-
-          cat > dist/index.html <<'HTML'
-          <!doctype html>
-          <html lang="ar" dir="rtl">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Nico AI</title>
-          </head>
-          <body>
-            <div id="root"></div>
-          </body>
-          </html>
-          HTML
+          ls -la dist
+          test -f dist/index.html
 
       - name: Setup Java
         uses: actions/setup-java@v4

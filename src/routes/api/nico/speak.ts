@@ -13,7 +13,8 @@ export const Route = createFileRoute("/api/nico/speak")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!aiClient.isConfigured()) return new Response("AI provider not configured", { status: 500 });
+        if (!aiClient.isConfigured())
+          return new Response("AI provider not configured", { status: 500 });
 
         const raw = await request.json().catch(() => null);
         const parsed = BodySchema.safeParse(raw);

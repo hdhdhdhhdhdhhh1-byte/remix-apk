@@ -18,7 +18,9 @@ const normalizeDigits = (s: string) =>
 export function parseWhen(input: string, now = new Date()): ParsedTime | null {
   const text = normalizeDigits(input).toLowerCase();
 
-  const rel = text.match(/(?:بعد|خلال|in)\s+(\d+)\s*(دقيقة|دقائق|دقيقه|ساعة|ساعات|ساعه|يوم|أيام|minute|minutes|hour|hours|day|days)/i);
+  const rel = text.match(
+    /(?:بعد|خلال|in)\s+(\d+)\s*(دقيقة|دقائق|دقيقه|ساعة|ساعات|ساعه|يوم|أيام|minute|minutes|hour|hours|day|days)/i,
+  );
   if (rel) {
     const n = Number(rel[1]);
     const unit = rel[2];
@@ -35,7 +37,9 @@ export function parseWhen(input: string, now = new Date()): ParsedTime | null {
         ? 0
         : null;
 
-  const clock = text.match(/(?:الساعة|الساعه|at)?\s*(\d{1,2})(?::(\d{2}))?\s*(ص|صباحا|صباحاً|م|مساء|مساءً|am|pm)?/i);
+  const clock = text.match(
+    /(?:الساعة|الساعه|at)?\s*(\d{1,2})(?::(\d{2}))?\s*(ص|صباحا|صباحاً|م|مساء|مساءً|am|pm)?/i,
+  );
   if (clock && (dayOffset !== null || /الساعة|الساعه|\bat\b/i.test(text))) {
     let hour = Number(clock[1]);
     const minute = Number(clock[2] ?? 0);
@@ -66,6 +70,10 @@ function formatLabel(target: Date, now: Date): string {
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const isTomorrow = target.toDateString() === tomorrow.toDateString();
-  const day = sameDay ? "اليوم" : isTomorrow ? "غداً" : target.toLocaleDateString("ar", { day: "numeric", month: "long" });
+  const day = sameDay
+    ? "اليوم"
+    : isTomorrow
+      ? "غداً"
+      : target.toLocaleDateString("ar", { day: "numeric", month: "long" });
   return `${day} ${hh}:${mm}`;
 }

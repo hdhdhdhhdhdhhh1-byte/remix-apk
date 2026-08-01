@@ -33,7 +33,6 @@ import {
   updateProfile,
 } from "./nico.functions";
 
-
 export type SaveMemoryInput = {
   key?: string;
   content: string;
@@ -124,8 +123,7 @@ export const nicoSync = {
   deleteMemory: (id: string) => deleteMemory({ data: { id } }),
   searchMemories: (query: string, limit = 10) => searchMemories({ data: { query, limit } }),
   updateProfile: (data: UpdateProfileInput) => updateProfile({ data }),
-  ensureConversation: (id?: string, title?: string) =>
-    ensureConversation({ data: { id, title } }),
+  ensureConversation: (id?: string, title?: string) => ensureConversation({ data: { id, title } }),
   saveMessage: (data: SaveMessageInput) => saveMessage({ data }),
   saveLearning: (data: SaveLearningInput) => saveLearning({ data }),
   updateMemory: (
@@ -140,4 +138,3 @@ export const nicoSync = {
   exportData: () => exportData(),
   deleteAccount: () => deleteAccount(),
 };
-

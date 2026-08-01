@@ -5,7 +5,10 @@ import type { ConversationMemory } from "./ConversationMemory";
 const REFERENCE_PATTERNS: { re: RegExp; kind: "topic" | "last_action" }[] = [
   { re: /^\s*(و\s*)?(ماذا|شو|وش|ايش|إيش)\s+(عن|بخصوص)/i, kind: "topic" },
   { re: /^\s*what about\b/i, kind: "topic" },
-  { re: /(كرره|كررها|أعدها|اعدها|مرة ثانية|مرة أخرى|again|do it again|repeat)/i, kind: "last_action" },
+  {
+    re: /(كرره|كررها|أعدها|اعدها|مرة ثانية|مرة أخرى|again|do it again|repeat)/i,
+    kind: "last_action",
+  },
   { re: /^\s*(و\s*)?(بكرة|بكره|غدا|غداً|اليوم|tomorrow|today)\s*[?؟]?\s*$/i, kind: "topic" },
 ];
 

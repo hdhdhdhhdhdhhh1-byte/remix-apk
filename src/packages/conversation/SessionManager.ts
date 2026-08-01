@@ -11,7 +11,10 @@ export class SessionManager {
   private info: SessionInfo;
   private listeners = new Set<(s: SessionInfo) => void>();
 
-  constructor(isGuest = true, private readonly idleMs = IDLE_MS) {
+  constructor(
+    isGuest = true,
+    private readonly idleMs = IDLE_MS,
+  ) {
     this.info = this.fresh(isGuest);
   }
 

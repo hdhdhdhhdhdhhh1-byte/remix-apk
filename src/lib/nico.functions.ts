@@ -11,7 +11,10 @@ async function ensureUserId(supabase: any, authId: string): Promise<string> {
     .eq("auth_id", authId)
     .maybeSingle();
   if (existing?.id) {
-    await supabase.from("users").update({ last_active: new Date().toISOString() }).eq("id", existing.id);
+    await supabase
+      .from("users")
+      .update({ last_active: new Date().toISOString() })
+      .eq("id", existing.id);
     return existing.id as string;
   }
   const { data: created, error } = await supabase
@@ -82,7 +85,9 @@ export const deleteMemory = createServerFn({ method: "POST" })
 
 export const searchMemories = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ query: z.string().min(1).max(200), limit: z.number().default(10) }).parse(i))
+  .inputValidator((i) =>
+    z.object({ query: z.string().min(1).max(200), limit: z.number().default(10) }).parse(i),
+  )
   .handler(async ({ context, data }) => {
     const userId = await ensureUserId(context.supabase, context.userId);
     const { data: rows } = await context.supabase
@@ -124,7 +129,9 @@ export const updateProfile = createServerFn({ method: "POST" })
 
 export const ensureConversation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ id: z.string().uuid().optional(), title: z.string().optional() }).parse(i))
+  .inputValidator((i) =>
+    z.object({ id: z.string().uuid().optional(), title: z.string().optional() }).parse(i),
+  )
   .handler(async ({ context, data }) => {
     const userId = await ensureUserId(context.supabase, context.userId);
     if (data.id) {
@@ -159,9 +166,7 @@ export const saveMessage = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     const userId = await ensureUserId(context.supabase, context.userId);
-    const { error } = await context.supabase
-      .from("messages")
-      .insert({ user_id: userId, ...data });
+    const { error } = await context.supabase.from("messages").insert({ user_id: userId, ...data });
     if (error) throw error;
     await context.supabase
       .from("conversations")

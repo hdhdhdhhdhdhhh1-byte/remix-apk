@@ -53,10 +53,7 @@ export function useNicoMobile() {
     () => new MobilePermissions(nico.runtime.permissions),
     [nico.runtime],
   );
-  const service = useMemo(
-    () => new VoiceBackgroundService(nico.runtime.voice),
-    [nico.runtime],
-  );
+  const service = useMemo(() => new VoiceBackgroundService(nico.runtime.voice), [nico.runtime]);
 
   // Boot the native shell and read first-run state.
   useEffect(() => {

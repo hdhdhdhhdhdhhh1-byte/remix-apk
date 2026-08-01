@@ -107,8 +107,9 @@ export class PermissionManager {
       });
     }
     if (key === "bluetooth") {
-      const bt = (navigator as unknown as { bluetooth?: { requestDevice: (o: unknown) => Promise<unknown> } })
-        .bluetooth;
+      const bt = (
+        navigator as unknown as { bluetooth?: { requestDevice: (o: unknown) => Promise<unknown> } }
+      ).bluetooth;
       if (!bt) {
         this.set("bluetooth", "denied");
         return "denied";
@@ -123,8 +124,11 @@ export class PermissionManager {
       }
     }
     if (key === "contacts") {
-      const contacts = (navigator as unknown as { contacts?: { select: (p: string[], o?: unknown) => Promise<unknown> } })
-        .contacts;
+      const contacts = (
+        navigator as unknown as {
+          contacts?: { select: (p: string[], o?: unknown) => Promise<unknown> };
+        }
+      ).contacts;
       if (!contacts) {
         this.set("contacts", "denied");
         return "denied";
@@ -164,7 +168,6 @@ export class PermissionManager {
   }
 
   revoke(key: PermissionKey) {
-
     this.set(key, "denied");
   }
 

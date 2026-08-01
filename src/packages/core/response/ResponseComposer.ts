@@ -60,7 +60,10 @@ export class ResponseComposer {
   }
 
   private polish(text: string, style: ResponseStyle): string {
-    let out = text.replace(/\s+/g, " ").replace(/\s+([.،؟!])/g, "$1").trim();
+    let out = text
+      .replace(/\s+/g, " ")
+      .replace(/\s+([.،؟!])/g, "$1")
+      .trim();
     if (style === "brief") {
       const sentences = out.split(/(?<=[.؟!])\s+/).slice(0, 2);
       out = sentences.join(" ");

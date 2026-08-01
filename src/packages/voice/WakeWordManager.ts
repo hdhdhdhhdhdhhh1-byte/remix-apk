@@ -52,12 +52,13 @@ type SpeechRecognitionLike = {
  */
 export function createSpeechRecognitionDetector(lang = "ar-SA"): WakeWordDetector | null {
   if (typeof window === "undefined") return null;
-  const Ctor = (
-    window as unknown as {
-      SpeechRecognition?: new () => SpeechRecognitionLike;
-      webkitSpeechRecognition?: new () => SpeechRecognitionLike;
-    }
-  ).SpeechRecognition ??
+  const Ctor =
+    (
+      window as unknown as {
+        SpeechRecognition?: new () => SpeechRecognitionLike;
+        webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+      }
+    ).SpeechRecognition ??
     (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionLike })
       .webkitSpeechRecognition;
   if (!Ctor) return null;

@@ -7,7 +7,10 @@ export const SearchSkill: Skill = {
   description: "يبحث عن معلومة عامة ويعيد ملخصاً قصيراً",
   intents: ["search"],
   async execute({ intent }) {
-    const query = intent.raw.replace(/ابحث\s*(عن|لي)?/i, "").replace(/search( for)?/i, "").trim();
+    const query = intent.raw
+      .replace(/ابحث\s*(عن|لي)?/i, "")
+      .replace(/search( for)?/i, "")
+      .trim();
     if (!query) return { ok: false, speech: "", error: "empty_query" };
     try {
       const res = await fetch(

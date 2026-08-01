@@ -74,10 +74,11 @@ var PopperAnchor = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __nam
 	const context = usePopperContext(ANCHOR_NAME, __scopePopper);
 	const ref = import_react.useRef(null);
 	const onAnchorChange = context.onAnchorChange;
-	const composedRefs = useComposedRefs(forwardedRef, import_react.useCallback((node) => {
+	const callbackRef = import_react.useCallback((node) => {
 		ref.current = node;
 		if (node) onAnchorChange(node);
-	}, [onAnchorChange]));
+	}, [onAnchorChange]);
+	const composedRefs = useComposedRefs(forwardedRef, callbackRef);
 	const anchorRef = import_react.useRef(null);
 	import_react.useEffect(() => {
 		if (!virtualRef) return;

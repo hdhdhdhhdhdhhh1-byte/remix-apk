@@ -11,7 +11,6 @@ export interface SpeakOptions {
 }
 
 export class TextToSpeech {
-
   private ctx: AudioContext | null = null;
   private sources = new Set<AudioBufferSourceNode>();
   private analyser: AnalyserNode | null = null;
@@ -73,7 +72,6 @@ export class TextToSpeech {
         speed: opts.speed,
         instructions: opts.instructions,
       }),
-
     });
     if (!res.ok || !res.body) {
       const detail = await res.text().catch(() => "");

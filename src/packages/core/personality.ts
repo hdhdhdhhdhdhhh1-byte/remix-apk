@@ -30,8 +30,7 @@ export const NICO_PHRASES = {
   unknown: "لم أجد الإجابة الآن، دعني أبحث لك.",
   done: "تمام، نفذت لك الأمر.",
   failed: "صار عندي خلل بسيط، خلّنا نجرّب مرة ثانية.",
-  needsPermission: (label: string) =>
-    `عشان أقدر أساعدك بهذا، أحتاج إذن ${label}. تسمح لي؟`,
+  needsPermission: (label: string) => `عشان أقدر أساعدك بهذا، أحتاج إذن ${label}. تسمح لي؟`,
 };
 
 /** Rewrites machine-sounding sentences into Nico's spoken style. */
@@ -47,5 +46,7 @@ export function humanize(text: string): string {
   for (const [re, replacement] of rules) {
     if (re.test(text)) return replacement;
   }
-  return text.replace(/^تم تنفيذ /, "تمام، نفذت لك ").replace(/^لا أعرف[،,]?\s*/, "لم أجد الإجابة الآن، ");
+  return text
+    .replace(/^تم تنفيذ /, "تمام، نفذت لك ")
+    .replace(/^لا أعرف[،,]?\s*/, "لم أجد الإجابة الآن، ");
 }

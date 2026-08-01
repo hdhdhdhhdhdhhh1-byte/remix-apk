@@ -29,7 +29,9 @@ export function getAiConfig(): AiConfig | null {
     process.env.AI_API_KEY || process.env.OPENAI_API_KEY || process.env.LOVABLE_API_KEY;
   const baseUrl =
     process.env.AI_API_URL ||
-    (process.env.LOVABLE_API_KEY ? "https://ai.gateway.lovable.dev/v1" : "https://api.openai.com/v1");
+    (process.env.LOVABLE_API_KEY
+      ? "https://ai.gateway.lovable.dev/v1"
+      : "https://api.openai.com/v1");
 
   if (!apiKey) return null;
 

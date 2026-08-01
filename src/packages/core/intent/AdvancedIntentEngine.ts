@@ -18,9 +18,11 @@ export const CATEGORY_BY_INTENT: Record<IntentName, RequestCategory> = {
   unknown: "conversation",
 };
 
-const COMMAND_RE = /^(شغل|أطفئ|اطفئ|افتح|اقفل|أرسل|ارسل|احجز|سوي|نفذ|turn|open|close|send|play|stop)/i;
+const COMMAND_RE =
+  /^(شغل|أطفئ|اطفئ|افتح|اقفل|أرسل|ارسل|احجز|سوي|نفذ|turn|open|close|send|play|stop)/i;
 const PERSONAL_RE = /(اسمي|أنا أحب|انا احب|تفضيلي|عادتي|my name is|i like|i prefer)/i;
-const SPLIT_RE = /\s*(?:،|,|\bثم\b|\bوبعدين\b|\bبعدها\b|\band then\b|\bثمّ\b)\s*|\s+و(?=(?:أرسل|ارسل|ذكرني|شغل|أطفئ|اطفئ|ابحث|احجز|أضف|اضف))/i;
+const SPLIT_RE =
+  /\s*(?:،|,|\bثم\b|\bوبعدين\b|\bبعدها\b|\band then\b|\bثمّ\b)\s*|\s+و(?=(?:أرسل|ارسل|ذكرني|شغل|أطفئ|اطفئ|ابحث|احجز|أضف|اضف))/i;
 
 /**
  * Advanced Intent Engine.

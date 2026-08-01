@@ -13,48 +13,6 @@ var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var reactUse = import_react.use;
 typeof window !== "undefined" ? import_react.useLayoutEffect : import_react.useEffect;
 /**
-* React hook to wrap `IntersectionObserver`.
-*
-* This hook will create an `IntersectionObserver` and observe the ref passed to it.
-*
-* When the intersection changes, the callback will be called with the `IntersectionObserverEntry`.
-*
-* @param ref - The ref to observe
-* @param intersectionObserverOptions - The options to pass to the IntersectionObserver
-* @param options - The options to pass to the hook
-* @param callback - The callback to call when the intersection changes
-* @returns The IntersectionObserver instance
-* @example
-* ```tsx
-* const MyComponent = () => {
-* const ref = React.useRef<HTMLDivElement>(null)
-* useIntersectionObserver(
-*  ref,
-*  (entry) => { doSomething(entry) },
-*  { rootMargin: '10px' },
-*  { disabled: false }
-* )
-* return <div ref={ref} />
-* ```
-*/
-function useIntersectionObserver(ref, callback, intersectionObserverOptions = {}, options = {}) {
-	import_react.useEffect(() => {
-		if (!ref.current || options.disabled || typeof IntersectionObserver !== "function") return;
-		const observer = new IntersectionObserver(([entry]) => {
-			callback(entry);
-		}, intersectionObserverOptions);
-		observer.observe(ref.current);
-		return () => {
-			observer.disconnect();
-		};
-	}, [
-		callback,
-		intersectionObserverOptions,
-		options.disabled,
-		ref
-	]);
-}
-/**
 * React hook to take a `React.ForwardedRef` and returns a `ref` that can be used on a DOM element.
 *
 * @param ref - The forwarded ref
@@ -3050,7 +3008,7 @@ var RouterCore = class {
 			const filter = (d) => {
 				const route = this.looseRoutesById[d.routeId];
 				if (!route.options.loader) return true;
-				const gcTime = (d.preload ? route.options.preloadGcTime ?? this.options.defaultPreloadGcTime : route.options.gcTime ?? this.options.defaultGcTime) ?? 300 * 1e3;
+				const gcTime = (d.preload ? route.options.preloadGcTime ?? this.options.defaultPreloadGcTime : route.options.gcTime ?? this.options.defaultGcTime) ?? 3e5;
 				if (d.status === "error") return true;
 				return now - d.updatedAt >= gcTime;
 			};
@@ -3488,9 +3446,6 @@ function extractStrictParams(route, accumulatedParams) {
 		Object.assign(accumulatedParams, result);
 	}
 }
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/link.js
-var preloadWarning = "Error preloading route! ☝️";
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/manifest.js
 function getAssetCrossOrigin(assetCrossOrigin, kind) {
@@ -4132,39 +4087,9 @@ var require_with_selector_production = /* @__PURE__ */ __commonJSMin(((exports) 
 		return value;
 	};
 }));
-//#endregion
-//#region node_modules/@tanstack/react-store/dist/esm/useStore.js
-var import_with_selector = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
+(/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require_with_selector_production();
 })))();
-function defaultCompare(a, b) {
-	return a === b;
-}
-function useStore(atom, selector, compare = defaultCompare) {
-	const subscribe = (0, import_react.useCallback)((handleStoreChange) => {
-		if (!atom) return () => {};
-		const { unsubscribe } = atom.subscribe(handleStoreChange);
-		return unsubscribe;
-	}, [atom]);
-	const boundGetSnapshot = (0, import_react.useCallback)(() => atom?.get(), [atom]);
-	return (0, import_with_selector.useSyncExternalStoreWithSelector)(subscribe, boundGetSnapshot, boundGetSnapshot, selector, compare);
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useMatch.js
-var dummyStore = {
-	get() {},
-	subscribe() {
-		return { unsubscribe() {} };
-	}
-};
-function useStructuralSharing(opts, router) {
-	const previousResult = import_react.useRef();
-	return (slice) => {
-		const selected = opts?.select ? opts.select(slice) : slice;
-		if (opts?.structuralSharing ?? router.options.defaultStructuralSharing) return previousResult.current = replaceEqualDeep(previousResult.current, selected);
-		return selected;
-	};
-}
 /**
 * Read and select the nearest or targeted route match.
 * @link https://tanstack.com/router/latest/docs/framework/react/api/router/useMatchHook
@@ -4181,10 +4106,6 @@ function useMatch(opts) {
 		}
 		return opts.select ? opts.select(match) : match;
 	}
-	const selector = useStructuralSharing(opts, router);
-	const matchSelection = useStore(matchStore ?? dummyStore, (match) => match ? selector(match) : dummyStore);
-	if (matchSelection !== dummyStore) return matchSelection;
-	if (opts.shouldThrow ?? true) invariant();
 }
 //#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/useLoaderData.js
@@ -4315,9 +4236,7 @@ function useRouteContext(opts) {
 		select: (match) => opts.select ? opts.select(match.context) : match.context
 	});
 }
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/link.js
-var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom(), 1);
+require_react_dom();
 /**
 * Build anchor-like props for declarative navigation and preloading.
 *
@@ -4453,215 +4372,6 @@ function useLinkProps(options, forwardedRef) {
 			...isActive && STATIC_ACTIVE_PROPS
 		};
 	}
-	const isHydrated = useHydrated();
-	const _options = import_react.useMemo(() => options, [
-		router,
-		options.from,
-		options._fromLocation,
-		options.hash,
-		options.to,
-		options.search,
-		options.params,
-		options.state,
-		options.mask,
-		options.unsafeRelative
-	]);
-	const currentLocation = useStore(router.stores.location, (l) => l, (prev, next) => prev.href === next.href);
-	const next = import_react.useMemo(() => {
-		const opts = {
-			_fromLocation: currentLocation,
-			..._options
-		};
-		return router.buildLocation(opts);
-	}, [
-		router,
-		currentLocation,
-		_options
-	]);
-	const hrefOptionPublicHref = next.maskedLocation ? next.maskedLocation.publicHref : next.publicHref;
-	const hrefOptionExternal = next.maskedLocation ? next.maskedLocation.external : next.external;
-	const hrefOption = import_react.useMemo(() => getHrefOption(hrefOptionPublicHref, hrefOptionExternal, router.history, disabled), [
-		disabled,
-		hrefOptionExternal,
-		hrefOptionPublicHref,
-		router.history
-	]);
-	const externalLink = import_react.useMemo(() => {
-		if (hrefOption?.external) {
-			if (isDangerousProtocol(hrefOption.href, router.protocolAllowlist)) return;
-			return hrefOption.href;
-		}
-		if (isSafeInternal(to)) return void 0;
-		if (typeof to !== "string" || to.indexOf(":") === -1) return void 0;
-		try {
-			new URL(to);
-			if (isDangerousProtocol(to, router.protocolAllowlist)) return;
-			return to;
-		} catch {}
-	}, [
-		to,
-		hrefOption,
-		router.protocolAllowlist
-	]);
-	const isActive = import_react.useMemo(() => {
-		if (externalLink) return false;
-		if (activeOptions?.exact) {
-			if (!exactPathTest(currentLocation.pathname, next.pathname, router.basepath)) return false;
-		} else {
-			const currentPathSplit = removeTrailingSlash(currentLocation.pathname, router.basepath);
-			const nextPathSplit = removeTrailingSlash(next.pathname, router.basepath);
-			if (!(currentPathSplit.startsWith(nextPathSplit) && (currentPathSplit.length === nextPathSplit.length || currentPathSplit[nextPathSplit.length] === "/"))) return false;
-		}
-		if (activeOptions?.includeSearch ?? true) {
-			if (!deepEqual(currentLocation.search, next.search, {
-				partial: !activeOptions?.exact,
-				ignoreUndefined: !activeOptions?.explicitUndefined
-			})) return false;
-		}
-		if (activeOptions?.includeHash) return isHydrated && currentLocation.hash === next.hash;
-		return true;
-	}, [
-		activeOptions?.exact,
-		activeOptions?.explicitUndefined,
-		activeOptions?.includeHash,
-		activeOptions?.includeSearch,
-		currentLocation,
-		externalLink,
-		isHydrated,
-		next.hash,
-		next.pathname,
-		next.search,
-		router.basepath
-	]);
-	const resolvedActiveProps = isActive ? functionalUpdate(activeProps, {}) ?? STATIC_ACTIVE_OBJECT : STATIC_EMPTY_OBJECT;
-	const resolvedInactiveProps = isActive ? STATIC_EMPTY_OBJECT : functionalUpdate(inactiveProps, {}) ?? STATIC_EMPTY_OBJECT;
-	const resolvedClassName = [
-		className,
-		resolvedActiveProps.className,
-		resolvedInactiveProps.className
-	].filter(Boolean).join(" ");
-	const resolvedStyle = (style || resolvedActiveProps.style || resolvedInactiveProps.style) && {
-		...style,
-		...resolvedActiveProps.style,
-		...resolvedInactiveProps.style
-	};
-	const [isTransitioning, setIsTransitioning] = import_react.useState(false);
-	const hasRenderFetched = import_react.useRef(false);
-	const preload = options.reloadDocument || externalLink ? false : userPreload ?? router.options.defaultPreload;
-	const preloadDelay = userPreloadDelay ?? router.options.defaultPreloadDelay ?? 0;
-	const doPreload = import_react.useCallback(() => {
-		router.preloadRoute({
-			..._options,
-			_builtLocation: next
-		}).catch((err) => {
-			console.warn(err);
-			console.warn(preloadWarning);
-		});
-	}, [
-		router,
-		_options,
-		next
-	]);
-	useIntersectionObserver(innerRef, import_react.useCallback((entry) => {
-		if (entry?.isIntersecting) doPreload();
-	}, [doPreload]), intersectionObserverOptions, { disabled: !!disabled || !(preload === "viewport") });
-	import_react.useEffect(() => {
-		if (hasRenderFetched.current) return;
-		if (!disabled && preload === "render") {
-			doPreload();
-			hasRenderFetched.current = true;
-		}
-	}, [
-		disabled,
-		doPreload,
-		preload
-	]);
-	const handleClick = (e) => {
-		const elementTarget = e.currentTarget.getAttribute("target");
-		const effectiveTarget = target !== void 0 ? target : elementTarget;
-		if (!disabled && !isCtrlEvent(e) && !e.defaultPrevented && (!effectiveTarget || effectiveTarget === "_self") && e.button === 0) {
-			e.preventDefault();
-			(0, import_react_dom.flushSync)(() => {
-				setIsTransitioning(true);
-			});
-			const unsub = router.subscribe("onResolved", () => {
-				unsub();
-				setIsTransitioning(false);
-			});
-			router.navigate({
-				..._options,
-				replace,
-				resetScroll,
-				hashScrollIntoView,
-				startTransition,
-				viewTransition,
-				ignoreBlocker
-			});
-		}
-	};
-	if (externalLink) return {
-		...propsSafeToSpread,
-		ref: innerRef,
-		href: externalLink,
-		...children && { children },
-		...target && { target },
-		...disabled && { disabled },
-		...style && { style },
-		...className && { className },
-		...onClick && { onClick },
-		...onBlur && { onBlur },
-		...onFocus && { onFocus },
-		...onMouseEnter && { onMouseEnter },
-		...onMouseLeave && { onMouseLeave },
-		...onTouchStart && { onTouchStart }
-	};
-	const enqueueIntentPreload = (e) => {
-		if (disabled || preload !== "intent") return;
-		if (!preloadDelay) {
-			doPreload();
-			return;
-		}
-		const eventTarget = e.currentTarget;
-		if (timeoutMap.has(eventTarget)) return;
-		const id = setTimeout(() => {
-			timeoutMap.delete(eventTarget);
-			doPreload();
-		}, preloadDelay);
-		timeoutMap.set(eventTarget, id);
-	};
-	const handleTouchStart = (_) => {
-		if (disabled || preload !== "intent") return;
-		doPreload();
-	};
-	const handleLeave = (e) => {
-		if (disabled || !preload || !preloadDelay) return;
-		const eventTarget = e.currentTarget;
-		const id = timeoutMap.get(eventTarget);
-		if (id) {
-			clearTimeout(id);
-			timeoutMap.delete(eventTarget);
-		}
-	};
-	return {
-		...propsSafeToSpread,
-		...resolvedActiveProps,
-		...resolvedInactiveProps,
-		href: hrefOption?.href,
-		ref: innerRef,
-		onClick: composeHandlers([onClick, handleClick]),
-		onBlur: composeHandlers([onBlur, handleLeave]),
-		onFocus: composeHandlers([onFocus, enqueueIntentPreload]),
-		onMouseEnter: composeHandlers([onMouseEnter, enqueueIntentPreload]),
-		onMouseLeave: composeHandlers([onMouseLeave, handleLeave]),
-		onTouchStart: composeHandlers([onTouchStart, handleTouchStart]),
-		disabled: !!disabled,
-		target,
-		...resolvedStyle && { style: resolvedStyle },
-		...resolvedClassName && { className: resolvedClassName },
-		...disabled && STATIC_DISABLED_PROPS,
-		...isActive && STATIC_ACTIVE_PROPS,
-		...isHydrated && isTransitioning && STATIC_TRANSITIONING_PROPS
-	};
 }
 var STATIC_EMPTY_OBJECT = {};
 var STATIC_ACTIVE_OBJECT = { className: "active" };
@@ -4672,16 +4382,6 @@ var STATIC_DISABLED_PROPS = {
 var STATIC_ACTIVE_PROPS = {
 	"data-status": "active",
 	"aria-current": "page"
-};
-var STATIC_TRANSITIONING_PROPS = { "data-transitioning": "transitioning" };
-var timeoutMap = /* @__PURE__ */ new WeakMap();
-var intersectionObserverOptions = { rootMargin: "100px" };
-var composeHandlers = (handlers) => (e) => {
-	for (const handler of handlers) {
-		if (!handler) continue;
-		if (e.defaultPrevented) return;
-		handler(e);
-	}
 };
 function getHrefOption(publicHref, external, history, disabled) {
 	if (disabled) return void 0;
@@ -4726,9 +4426,6 @@ var Link = import_react.forwardRef((props, ref) => {
 	}
 	return import_react.createElement(_asChild, linkProps, children);
 });
-function isCtrlEvent(e) {
-	return !!(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
-}
 //#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/route.js
 var Route = class extends BaseRoute {
@@ -4983,19 +4680,6 @@ function CatchNotFound(props) {
 			children: props.children
 		});
 	}
-	const resetKey = `not-found-${useStore(router.stores.location, (location) => location.pathname)}-${useStore(router.stores.status, (status) => status)}`;
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundary, {
-		getResetKey: () => resetKey,
-		onCatch: (error, errorInfo) => {
-			if (isNotFound(error)) props.onCatch?.(error, errorInfo);
-			else throw error;
-		},
-		errorComponent: ({ error }) => {
-			if (isNotFound(error)) return props.fallback?.(error);
-			else throw error;
-		},
-		children: props.children
-	});
 }
 function DefaultGlobalNotFound() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Not Found" });
@@ -5060,9 +4744,6 @@ function ScrollRestoration() {
 	if (!script) return null;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScriptOnce, { children: script });
 }
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/Match.js
-var matchViewFieldsEqual = (a, b) => a.routeId === b.routeId && a._displayPending === b._displayPending;
 var Match = import_react.memo(function MatchImpl({ matchId }) {
 	const router = useRouter();
 	{
@@ -5082,30 +4763,6 @@ var Match = import_react.memo(function MatchImpl({ matchId }) {
 			}
 		});
 	}
-	const matchStore = router.stores.matchStores.get(matchId);
-	if (!matchStore) invariant();
-	const resetKey = useStore(router.stores.loadedAt, (loadedAt) => loadedAt);
-	const match = useStore(matchStore, (value) => value, matchViewFieldsEqual);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchView, {
-		router,
-		matchId,
-		resetKey,
-		matchState: import_react.useMemo(() => {
-			const routeId = match.routeId;
-			const parentRouteId = router.routesById[routeId].parentRoute?.id;
-			return {
-				routeId,
-				ssr: match.ssr,
-				_displayPending: match._displayPending,
-				parentRouteId
-			};
-		}, [
-			match._displayPending,
-			match.routeId,
-			match.ssr,
-			router.routesById
-		])
-	});
 });
 function MatchView({ router, matchId, resetKey, matchState }) {
 	const route = router.routesById[matchState.routeId];
@@ -5188,59 +4845,6 @@ var MatchInner = import_react.memo(function MatchInnerImpl({ matchId }) {
 		});
 		return out;
 	}
-	const matchStore = router.stores.matchStores.get(matchId);
-	if (!matchStore) invariant();
-	const match = useStore(matchStore, (value) => value);
-	const routeId = match.routeId;
-	const route = router.routesById[routeId];
-	const key = import_react.useMemo(() => {
-		const remountDeps = (router.routesById[routeId].options.remountDeps ?? router.options.defaultRemountDeps)?.({
-			routeId,
-			loaderDeps: match.loaderDeps,
-			params: match._strictParams,
-			search: match._strictSearch
-		});
-		return remountDeps ? JSON.stringify(remountDeps) : void 0;
-	}, [
-		routeId,
-		match.loaderDeps,
-		match._strictParams,
-		match._strictSearch,
-		router.options.defaultRemountDeps,
-		router.routesById
-	]);
-	const out = import_react.useMemo(() => {
-		const Comp = route.options.component ?? router.options.defaultComponent;
-		if (Comp) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Comp, {}, key);
-		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {});
-	}, [
-		key,
-		route.options.component,
-		router.options.defaultComponent
-	]);
-	if (match._displayPending) throw getMatchPromise(match, "displayPendingPromise");
-	if (match._forcePending) throw getMatchPromise(match, "minPendingPromise");
-	if (match.status === "pending") {
-		if (route.options.pendingMinMs ?? router.options.defaultPendingMinMs) {
-			const routerMatch = router.getMatch(match.id);
-			if (routerMatch && !routerMatch._nonReactive.minPendingPromise) {}
-		}
-		throw getMatchPromise(match, "loadPromise");
-	}
-	if (match.status === "notFound") {
-		if (!isNotFound(match.error)) invariant();
-		return renderRouteNotFound(router, route, match.error);
-	}
-	if (match.status === "redirected") {
-		if (!isRedirect(match.error)) invariant();
-		throw getMatchPromise(match, "loadPromise");
-	}
-	if (match.status === "error") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)((route.options.errorComponent ?? router.options.defaultErrorComponent) || ErrorComponent, {
-		error: match.error,
-		reset: void 0,
-		info: { componentStack: "" }
-	});
-	return out;
 });
 /**
 * Render the next child match in the route tree. Typically used inside
@@ -5661,8 +5265,6 @@ var Scripts = () => {
 		const assetScripts = getAssetScripts(activeMatches);
 		return renderScripts(router, getScripts(activeMatches), assetScripts);
 	}
-	const assetScripts = useStore(router.stores.matches, getAssetScripts, deepEqual);
-	return renderScripts(router, useStore(router.stores.matches, getScripts, deepEqual), assetScripts);
 };
 function renderScripts(router, scripts, assetScripts) {
 	const allScripts = [...scripts, ...assetScripts];
@@ -13908,9 +13510,9 @@ var MIN_CLOSING_TAG_LENGTH = 4;
 var DEFAULT_SERIALIZATION_TIMEOUT_MS = 6e4;
 var DEFAULT_LIFETIME_TIMEOUT_MS = DEFAULT_SERIALIZATION_TIMEOUT_MS * 2;
 var MAX_LEFTOVER_CHARS = 2048;
-var MAX_TAIL_CHARS = 64 * 1024;
-var MAX_ROUTER_HTML_CHARS = 16 * 1024 * 1024;
-var MAX_PENDING_WRITE_CHARS = 16 * 1024 * 1024;
+var MAX_TAIL_CHARS = 65536;
+var MAX_ROUTER_HTML_CHARS = 16777216;
+var MAX_PENDING_WRITE_CHARS = 16777216;
 var MergeState = {
 	ReadingBody: 0,
 	HoldingTail: 1,

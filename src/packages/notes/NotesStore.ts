@@ -53,7 +53,10 @@ export class NotesStore {
   }
 
   search(query: string, limit = 5): Note[] {
-    const tokens = query.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+    const tokens = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((t) => t.length > 2);
     if (!tokens.length) return this.all().slice(0, limit);
     return this.notes
       .map((n) => ({ n, hits: tokens.filter((t) => n.text.toLowerCase().includes(t)).length }))

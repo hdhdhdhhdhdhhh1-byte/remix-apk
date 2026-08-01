@@ -66,6 +66,8 @@ export class TaskPlanner {
   runnable(plan: AgentPlan, completed: Set<string>): AgentPlanStep[] {
     return [...plan.steps]
       .sort((a, b) => a.order - b.order)
-      .filter((s) => s.dependsOn.every((d) => completed.has(d) || !plan.steps.some((p) => p.id === d)));
+      .filter((s) =>
+        s.dependsOn.every((d) => completed.has(d) || !plan.steps.some((p) => p.id === d)),
+      );
   }
 }

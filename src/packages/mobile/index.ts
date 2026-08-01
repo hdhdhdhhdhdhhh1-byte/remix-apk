@@ -7,7 +7,11 @@
 export * from "./MobilePermissions";
 export * from "./VoiceBackgroundService";
 export * from "./GuestUpgrade";
-export { isNativePlatform, nativePlatform, installCapacitorBridge } from "../mobile-bridge/capacitor";
+export {
+  isNativePlatform,
+  nativePlatform,
+  installCapacitorBridge,
+} from "../mobile-bridge/capacitor";
 
 import { installCapacitorBridge, isNativePlatform } from "../mobile-bridge/capacitor";
 

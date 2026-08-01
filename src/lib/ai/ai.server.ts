@@ -5,7 +5,14 @@
  */
 
 import { getAiConfig } from "./ai.config";
-import { chat, transcribe, speak, type ChatOptions, type TranscribeOptions, type SpeakOptions } from "./providers";
+import {
+  chat,
+  transcribe,
+  speak,
+  type ChatOptions,
+  type TranscribeOptions,
+  type SpeakOptions,
+} from "./providers";
 
 export class AiUnavailableError extends Error {
   constructor() {

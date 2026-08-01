@@ -31,7 +31,10 @@ const OFFLINE_COMMANDS: { test: RegExp; reply: (now: Date) => string }[] = [
     reply: (now) => `اليوم ${now.toLocaleDateString("ar")}.`,
   },
   { test: /^(توقف|اسكت|stop|be quiet)(?![\p{L}\p{N}])/iu, reply: () => "" },
-  { test: /^(شكرا|شكراً|thanks|thank you)(?![\p{L}\p{N}])/iu, reply: () => "العفو، دائماً في خدمتك." },
+  {
+    test: /^(شكرا|شكراً|thanks|thank you)(?![\p{L}\p{N}])/iu,
+    reply: () => "العفو، دائماً في خدمتك.",
+  },
 ];
 
 export class LocalVoiceCache {
@@ -66,7 +69,11 @@ export class LocalVoiceCache {
   }
 
   private static normalize(text: string) {
-    return text.trim().toLowerCase().replace(/\s+/g, " ").replace(/[.،؟?!]+$/g, "");
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .replace(/[.،؟?!]+$/g, "");
   }
 
   /** True when the device currently has no connectivity. */

@@ -39,7 +39,11 @@ export class MemoryManager {
    * Analyze a raw user utterance and either store, queue for confirmation,
    * or ignore it. Returns the resulting analysis for the pipeline.
    */
-  ingest(utterance: string): { analysis: MemoryAnalysis; stored?: MemoryRecord; pending?: PendingMemory } {
+  ingest(utterance: string): {
+    analysis: MemoryAnalysis;
+    stored?: MemoryRecord;
+    pending?: PendingMemory;
+  } {
     const analysis = this.intelligence.analyze(utterance);
     if (analysis.profilePatch) this.profile.update(analysis.profilePatch);
     if (!analysis.shouldConsider || !analysis.suggestion) return { analysis };
@@ -138,7 +142,8 @@ export class MemoryManager {
     const p = this.profile.data;
     const lines: string[] = [];
     if (p.name) lines.push(`اسمك ${p.name}`);
-    if (p.preferredName && p.preferredName !== p.name) lines.push(`تحب أن أناديك ${p.preferredName}`);
+    if (p.preferredName && p.preferredName !== p.name)
+      lines.push(`تحب أن أناديك ${p.preferredName}`);
     if (p.interests.length) lines.push(`اهتماماتك: ${p.interests.join("، ")}`);
     for (const [k, v] of Object.entries(p.preferences)) lines.push(`${k}: ${v}`);
     for (const d of p.importantDates) lines.push(`${d.label}: ${d.date}`);
@@ -155,8 +160,7 @@ export class MemoryManager {
 
   digest(): string {
     const p = this.profile.data;
-    const lines = this.ranked(12)
-      .map((r) => `- ${r.key}: ${r.value}`);
+    const lines = this.ranked(12).map((r) => `- ${r.key}: ${r.value}`);
     if (p.name) lines.unshift(`- الاسم: ${p.name}`);
     if (p.preferredName) lines.unshift(`- ينادى بـ: ${p.preferredName}`);
     if (p.interests.length) lines.unshift(`- اهتمامات: ${p.interests.join("، ")}`);
