@@ -17,7 +17,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.nico.ai",
   appName: "Nico AI",
-  webDir: "dist",
+  webDir: ".output/public",
   // server: {
   //   url: "https://<your-preview>.lovable.app?forceHideBadge=true",
   //   cleartext: true,
