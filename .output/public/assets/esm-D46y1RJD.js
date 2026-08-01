@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/web-CrcSnH7a.js","assets/dist-Do0m8ifp.js"])))=>i.map(i=>d[i]);
+import{n as e}from"./index-Kak_GOFG.js";import{n as t}from"./dist-Do0m8ifp.js";var n;(function(e){e.Heavy=`HEAVY`,e.Medium=`MEDIUM`,e.Light=`LIGHT`})(n||={});var r;(function(e){e.Success=`SUCCESS`,e.Warning=`WARNING`,e.Error=`ERROR`})(r||={});var i=t(`Haptics`,{web:()=>e(()=>import(`./web-CrcSnH7a.js`).then(e=>new e.HapticsWeb),__vite__mapDeps([0,1]))});export{i as Haptics,n as ImpactStyle,r as NotificationType};
