@@ -36,6 +36,9 @@ jobs:
         echo '<!DOCTYPE html><html lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nico AI</title><link rel="icon" href="/favicon.ico"><script type="module" crossorigin src="/assets/main.js"></script><link rel="stylesheet" crossorigin href="/assets/main.css"></head><body><div id="root"></div></body></html>' > .output/public/index.html
         cp public/favicon.ico .output/public/
 
+    - name: Add Android platform
+      run: npx cap add android
+
     - name: Sync Capacitor
       run: npx cap sync android
 
