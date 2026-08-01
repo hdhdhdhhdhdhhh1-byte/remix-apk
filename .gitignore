@@ -8,3 +8,4 @@ models/
 *.gguf
 *_report.txt
 *.backup
+.output
