@@ -1,9 +1,5 @@
 /**
- * Thin adapter that speaks the OpenAI-compatible REST shape used by every
- * major provider (OpenAI, OpenRouter, Groq, LiteLLM, self-hosted vLLM …).
- *
- * If a project later needs a native Anthropic / Gemini SDK, add another
- * adapter here and switch on config.provider inside ai.client.ts.
+ * Thin adapter - FIXED FOR TERMUX
  */
 
 import type { AiConfig } from "./ai.config";
@@ -71,17 +67,17 @@ export interface SpeakOptions {
 }
 
 export async function speak(cfg: AiConfig, opts: SpeakOptions): Promise<Response> {
-  return fetch(`${cfg.baseUrl}/audio/speech`, {
-    method: "POST",
-    headers: authHeaders(cfg, { "Content-Type": "application/json" }),
-    body: JSON.stringify({
-      model: opts.model || cfg.ttsModel,
-      input: opts.text.slice(0, 3000),
-      voice: opts.voice || cfg.ttsVoice,
-      speed: opts.speed ?? 1,
-      ...(opts.instructions ? { instructions: opts.instructions } : {}),
-      ...(opts.streaming ? { stream_format: "sse" } : {}),
-      ...(opts.format ? { response_format: opts.format } : {}),
-    }),
+  const fs = await import("fs/promises");
+  const { spawn } = await import("child_process");
+  const output = `/data/data/com.termux/files/home/remix-of-90159487/nico.wav`;
+  const safe = opts.text.replace(/"/g,'').replace(/`/g,'').slice(0,400);
+  
+  await new Promise<void>((resolve, reject) => {
+    const espeak = spawn("espeak", ["-v", "ar", "-s", "125", "-w", output, safe]);
+    espeak.on("close", (code) => code === 0 ? resolve() : reject(new Error(`espeak ${code}`)));
+    espeak.on("error", (e) => reject(e));
   });
+
+  const audio = await fs.readFile(output);
+  return new Response(audio, { headers: { "Content-Type": "audio/wav" } });
 }
