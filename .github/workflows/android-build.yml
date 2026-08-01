@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -26,14 +27,34 @@ jobs:
       - name: Build Web
         run: npm run build
 
-      - name: Capacitor Sync
-        run: npx cap sync android
+      - name: Prepare Capacitor Web Assets
+        run: |
+          rm -rf dist
+          mkdir dist
+          cp -r .output/public/* dist/
+
+          cat > dist/index.html <<'HTML'
+          <!doctype html>
+          <html lang="ar" dir="rtl">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Nico AI</title>
+          </head>
+          <body>
+            <div id="root"></div>
+          </body>
+          </html>
+          HTML
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Capacitor Sync
+        run: npx cap sync android
 
       - name: Build APK
         run: |
