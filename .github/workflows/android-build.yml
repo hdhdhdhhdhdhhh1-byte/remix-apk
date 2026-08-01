@@ -1,13 +1,13 @@
-name: Nico AI Android Build
+name: Build Nico Android
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  android:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,12 +18,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - name: Install packages
-        run: npm install
+      - name: Install
+        run: npm ci
 
-      - name: Build Web App
+      - name: Build Web
         run: npm run build
+
+      - name: Capacitor Sync
+        run: npx cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -31,20 +35,13 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Add Android
-        run: |
-          npm install @capacitor/android
-          npx cap add android || true
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
       - name: Build APK
-        working-directory: android
-        run: ./gradlew assembleRelease
+        run: |
+          cd android
+          ./gradlew assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Nico-AI-release
+          name: nico-release-apk
           path: android/app/build/outputs/apk/release/*.apk
