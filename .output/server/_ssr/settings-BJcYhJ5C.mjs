@@ -2,8 +2,8 @@ import { r as __toESM } from "../_runtime.mjs";
 import { P as require_jsx_runtime } from "../_libs/@radix-ui/react-alert-dialog+[...].mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { r as VOICE_OPTIONS, s as useNico } from "./useNico-DG1TdfhW.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/settings-Bi5hvANV.js
+import { r as VOICE_OPTIONS, s as useNico } from "./useNico-CbCwxMP-.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/settings-BJcYhJ5C.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var KEY$1 = "nico.automation.v1";

@@ -1,7 +1,7 @@
 import { c as createServerFn, i as TSS_SERVER_FUNCTION } from "./createServerFn-BFFE07zL.mjs";
 import { t as requireSupabaseAuth } from "./auth-middleware-BwdutfJC.mjs";
 import { a as numberType, c as stringType, i as enumType, n as arrayType, o as objectType, r as booleanType, s as recordType, t as anyType } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/nico.functions-C-sVQwWu.js
+//#region node_modules/.nitro/vite/services/ssr/assets/nico.functions-C-bUHVzD.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -46,7 +46,7 @@ var saveMemory_createServerFn_handler = createServerRpc({
 	name: "saveMemory",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveMemory.__executeServer(opts));
-var saveMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	key: stringType().optional(),
 	content: stringType().min(1).max(4e3),
 	type: stringType().default("fact"),
@@ -76,7 +76,7 @@ var deleteMemory_createServerFn_handler = createServerRpc({
 	name: "deleteMemory",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => deleteMemory.__executeServer(opts));
-var deleteMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({ id: stringType().uuid() }).parse(i)).handler(deleteMemory_createServerFn_handler, async ({ context, data }) => {
+var deleteMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({ id: stringType().uuid() }).parse(i)).handler(deleteMemory_createServerFn_handler, async ({ context, data }) => {
 	const { error } = await context.supabase.from("memories").delete().eq("id", data.id);
 	if (error) throw error;
 	return { ok: true };
@@ -86,7 +86,7 @@ var searchMemories_createServerFn_handler = createServerRpc({
 	name: "searchMemories",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => searchMemories.__executeServer(opts));
-var searchMemories = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var searchMemories = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	query: stringType().min(1).max(200),
 	limit: numberType().default(10)
 }).parse(i)).handler(searchMemories_createServerFn_handler, async ({ context, data }) => {
@@ -99,7 +99,7 @@ var updateProfile_createServerFn_handler = createServerRpc({
 	name: "updateProfile",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => updateProfile.__executeServer(opts));
-var updateProfile = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var updateProfile = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	preferred_name: stringType().optional(),
 	language: stringType().optional(),
 	communication_style: stringType().optional(),
@@ -118,7 +118,7 @@ var ensureConversation_createServerFn_handler = createServerRpc({
 	name: "ensureConversation",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => ensureConversation.__executeServer(opts));
-var ensureConversation = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var ensureConversation = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	id: stringType().uuid().optional(),
 	title: stringType().optional()
 }).parse(i)).handler(ensureConversation_createServerFn_handler, async ({ context, data }) => {
@@ -139,7 +139,7 @@ var saveMessage_createServerFn_handler = createServerRpc({
 	name: "saveMessage",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveMessage.__executeServer(opts));
-var saveMessage = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveMessage = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	conversation_id: stringType().uuid(),
 	role: enumType(["user", "nico"]),
 	content: stringType().min(1),
@@ -160,7 +160,7 @@ var saveLearning_createServerFn_handler = createServerRpc({
 	name: "saveLearning",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveLearning.__executeServer(opts));
-var saveLearning = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveLearning = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	signal_type: stringType(),
 	correction: stringType().optional(),
 	learned_preference: recordType(anyType()).optional(),
@@ -179,7 +179,7 @@ var updateMemory_createServerFn_handler = createServerRpc({
 	name: "updateMemory",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => updateMemory.__executeServer(opts));
-var updateMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var updateMemory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	id: stringType().uuid(),
 	content: stringType().min(1).max(4e3).optional(),
 	key: stringType().optional(),
@@ -226,7 +226,7 @@ var listMessages_createServerFn_handler = createServerRpc({
 	name: "listMessages",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => listMessages.__executeServer(opts));
-var listMessages = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({ conversation_id: stringType().uuid() }).parse(i)).handler(listMessages_createServerFn_handler, async ({ context, data }) => {
+var listMessages = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({ conversation_id: stringType().uuid() }).parse(i)).handler(listMessages_createServerFn_handler, async ({ context, data }) => {
 	const { data: rows } = await context.supabase.from("messages").select("id, role, content, intent, created_at").eq("conversation_id", data.conversation_id).order("created_at", { ascending: true });
 	return rows ?? [];
 });
@@ -245,7 +245,7 @@ var deleteLearning_createServerFn_handler = createServerRpc({
 	name: "deleteLearning",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => deleteLearning.__executeServer(opts));
-var deleteLearning = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({ id: stringType().uuid() }).parse(i)).handler(deleteLearning_createServerFn_handler, async ({ context, data }) => {
+var deleteLearning = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({ id: stringType().uuid() }).parse(i)).handler(deleteLearning_createServerFn_handler, async ({ context, data }) => {
 	const { error } = await context.supabase.from("learning_records").delete().eq("id", data.id);
 	if (error) throw error;
 	return { ok: true };
@@ -291,7 +291,7 @@ var saveVoiceSession_createServerFn_handler = createServerRpc({
 	name: "saveVoiceSession",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveVoiceSession.__executeServer(opts));
-var saveVoiceSession = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveVoiceSession = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	conversation_id: stringType().uuid().optional(),
 	duration: numberType().min(0).max(3600).default(0),
 	language: stringType().max(12).default("ar"),
@@ -332,7 +332,7 @@ var saveVoicePreferences_createServerFn_handler = createServerRpc({
 	name: "saveVoicePreferences",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveVoicePreferences.__executeServer(opts));
-var saveVoicePreferences = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveVoicePreferences = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	voice_name: stringType().min(1).max(40),
 	speed: numberType().min(.5).max(2),
 	tone: enumType([
@@ -367,7 +367,7 @@ var saveVoiceSettings_createServerFn_handler = createServerRpc({
 	name: "saveVoiceSettings",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveVoiceSettings.__executeServer(opts));
-var saveVoiceSettings = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveVoiceSettings = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	voice_id: stringType().min(1).max(40).optional(),
 	speed: numberType().min(.5).max(2).optional(),
 	pitch: numberType().min(.5).max(2).optional(),
@@ -407,7 +407,7 @@ var saveDevicePermission_createServerFn_handler = createServerRpc({
 	name: "saveDevicePermission",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => saveDevicePermission.__executeServer(opts));
-var saveDevicePermission = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var saveDevicePermission = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	permission: stringType().min(1).max(40),
 	status: enumType([
 		"granted",
@@ -430,7 +430,7 @@ var logAssistantEvent_createServerFn_handler = createServerRpc({
 	name: "logAssistantEvent",
 	filename: "src/lib/nico.functions.ts"
 }, (opts) => logAssistantEvent.__executeServer(opts));
-var logAssistantEvent = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i) => objectType({
+var logAssistantEvent = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((i) => objectType({
 	event_type: stringType().min(1).max(60),
 	detail: stringType().max(500).optional(),
 	metadata: recordType(anyType()).optional()

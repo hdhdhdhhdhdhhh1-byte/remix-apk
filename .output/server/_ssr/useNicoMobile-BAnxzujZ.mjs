@@ -1,7 +1,7 @@
 import { r as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
-import { a as nicoSync, i as mobileBridge, o as registerMobileBridge, s as useNico } from "./useNico-DG1TdfhW.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/useNicoMobile-C_BHGEH9.js
+import { a as nicoSync, i as mobileBridge, o as registerMobileBridge, s as useNico } from "./useNico-CbCwxMP-.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/useNicoMobile-BAnxzujZ.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 /** True only inside the Android/iOS shell. */
 function isNativePlatform() {

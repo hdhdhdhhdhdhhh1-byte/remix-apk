@@ -51,7 +51,7 @@ export const getBootstrap = createServerFn({ method: "GET" })
 
 export const saveMemory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         key: z.string().optional(),
@@ -76,7 +76,7 @@ export const saveMemory = createServerFn({ method: "POST" })
 
 export const deleteMemory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase.from("memories").delete().eq("id", data.id);
     if (error) throw error;
@@ -85,7 +85,7 @@ export const deleteMemory = createServerFn({ method: "POST" })
 
 export const searchMemories = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z.object({ query: z.string().min(1).max(200), limit: z.number().default(10) }).parse(i),
   )
   .handler(async ({ context, data }) => {
@@ -102,7 +102,7 @@ export const searchMemories = createServerFn({ method: "POST" })
 
 export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         preferred_name: z.string().optional(),
@@ -129,7 +129,7 @@ export const updateProfile = createServerFn({ method: "POST" })
 
 export const ensureConversation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z.object({ id: z.string().uuid().optional(), title: z.string().optional() }).parse(i),
   )
   .handler(async ({ context, data }) => {
@@ -153,7 +153,7 @@ export const ensureConversation = createServerFn({ method: "POST" })
 
 export const saveMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         conversation_id: z.string().uuid(),
@@ -177,7 +177,7 @@ export const saveMessage = createServerFn({ method: "POST" })
 
 export const saveLearning = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         signal_type: z.string(),
@@ -198,7 +198,7 @@ export const saveLearning = createServerFn({ method: "POST" })
 
 export const updateMemory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         id: z.string().uuid(),
@@ -245,7 +245,7 @@ export const listConversations = createServerFn({ method: "GET" })
 
 export const listMessages = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) => z.object({ conversation_id: z.string().uuid() }).parse(i))
+  .inputValidator((i) => z.object({ conversation_id: z.string().uuid() }).parse(i))
   .handler(async ({ context, data }) => {
     const { data: rows } = await context.supabase
       .from("messages")
@@ -270,7 +270,7 @@ export const listLearning = createServerFn({ method: "GET" })
 
 export const deleteLearning = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase.from("learning_records").delete().eq("id", data.id);
     if (error) throw error;
@@ -319,7 +319,7 @@ export const deleteAccount = createServerFn({ method: "POST" })
 
 export const saveVoiceSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         conversation_id: z.string().uuid().optional(),
@@ -369,7 +369,7 @@ export const getVoicePreferences = createServerFn({ method: "GET" })
 
 export const saveVoicePreferences = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         voice_name: z.string().min(1).max(40),
@@ -407,7 +407,7 @@ export const getVoiceSettings = createServerFn({ method: "GET" })
 
 export const saveVoiceSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         voice_id: z.string().min(1).max(40).optional(),
@@ -447,7 +447,7 @@ export const listDevicePermissions = createServerFn({ method: "GET" })
 
 export const saveDevicePermission = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         permission: z.string().min(1).max(40),
@@ -468,7 +468,7 @@ export const saveDevicePermission = createServerFn({ method: "POST" })
 
 export const logAssistantEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((i) =>
+  .inputValidator((i) =>
     z
       .object({
         event_type: z.string().min(1).max(60),

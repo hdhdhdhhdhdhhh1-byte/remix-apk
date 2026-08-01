@@ -7,7 +7,7 @@ import { a as numberType, c as stringType, o as objectType } from "../_libs/zod.
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import processModule from "node:process";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BKGZtmJZ.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CLacDzbf.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-DTPrbyrL.css";
@@ -176,7 +176,7 @@ function RootComponent() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})
 	});
 }
-var $$splitComponentImporter$8 = () => import("./routes-ze28k1lp.mjs");
+var $$splitComponentImporter$8 = () => import("./routes-Cg4eC4ny.mjs");
 var Route$12 = createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "نيكو — مساعد ذكاء اصطناعي صوتي شخصي" },
@@ -240,7 +240,7 @@ var Route$10 = createFileRoute("/auth")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$6, "component")
 });
-var $$splitComponentImporter$5 = () => import("./nico-C9bUMTQv.mjs");
+var $$splitComponentImporter$5 = () => import("./nico-CY8NzYRB.mjs");
 var Route$9 = createFileRoute("/nico")({
 	head: () => ({ meta: [
 		{ title: "تحدث مع نيكو — تجربة صوتية كاملة" },
@@ -267,7 +267,7 @@ var Route$9 = createFileRoute("/nico")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$5, "component")
 });
-var $$splitComponentImporter$4 = () => import("./settings-Bi5hvANV.mjs");
+var $$splitComponentImporter$4 = () => import("./settings-BJcYhJ5C.mjs");
 var Route$8 = createFileRoute("/settings")({
 	head: () => ({ meta: [
 		{ title: "إعدادات نيكو — الصوت والشخصية والمهارات والخصوصية" },
@@ -321,7 +321,7 @@ var Route$7 = createFileRoute("/sitemap.xml")({ server: { handlers: { GET: async
 		"Cache-Control": "public, max-age=3600"
 	} });
 } } } });
-var $$splitComponentImporter$3 = () => import("./dashboard-CmPu29mu.mjs");
+var $$splitComponentImporter$3 = () => import("./dashboard-qMj17QND.mjs");
 var Route$6 = createFileRoute("/_authenticated/dashboard")({
 	head: () => ({ meta: [
 		{ title: "مركز نيكو الشخصي — ذاكرتك، شخصيتك، محادثاتك" },
@@ -348,7 +348,7 @@ var Route$6 = createFileRoute("/_authenticated/dashboard")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-var $$splitComponentImporter$2 = () => import("./privacy-CdjvowXd.mjs");
+var $$splitComponentImporter$2 = () => import("./privacy-O4TmPBzR.mjs");
 var Route$5 = createFileRoute("/_authenticated/privacy")({
 	head: () => ({ meta: [
 		{ title: "مركز الخصوصية — نيكو" },
@@ -376,7 +376,7 @@ var Route$5 = createFileRoute("/_authenticated/privacy")({
 	component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
 var $$splitErrorComponentImporter = () => import("./mobile-pYsIao1B.mjs");
-var $$splitComponentImporter$1 = () => import("./mobile-Bc-hQooB.mjs");
+var $$splitComponentImporter$1 = () => import("./mobile-CcshFTrJ.mjs");
 var Route$4 = createFileRoute("/mobile/")({
 	head: () => ({ meta: [
 		{ title: "Nico AI — تطبيق المساعد الصوتي للأندرويد" },
@@ -405,7 +405,7 @@ var Route$4 = createFileRoute("/mobile/")({
 	errorComponent: lazyRouteComponent($$splitErrorComponentImporter, "errorComponent")
 });
 /** Crash protection: a failed render never leaves a blank phone screen. */
-var $$splitComponentImporter = () => import("./settings-COJqpz58.mjs");
+var $$splitComponentImporter = () => import("./settings-YUN_6Shk.mjs");
 var Route$3 = createFileRoute("/mobile/settings")({
 	head: () => ({ meta: [
 		{ title: "إعدادات نيكو — الصوت والشخصية وطريقة الرد" },

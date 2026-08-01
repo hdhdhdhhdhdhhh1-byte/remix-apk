@@ -2,10 +2,10 @@ import { r as __toESM } from "../_runtime.mjs";
 import { P as require_jsx_runtime } from "../_libs/@radix-ui/react-alert-dialog+[...].mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { r as VOICE_OPTIONS, s as useNico } from "./useNico-DG1TdfhW.mjs";
+import { r as VOICE_OPTIONS, s as useNico } from "./useNico-CbCwxMP-.mjs";
 import { t as VoiceWaves } from "./VoiceWaves-C2ER8I--.mjs";
-import { n as WelcomeExperience, r as hasSeenWelcome, t as NicoOrb } from "./WelcomeExperience-CZjn4wzI.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/nico-C9bUMTQv.js
+import { n as WelcomeExperience, r as hasSeenWelcome, t as NicoOrb } from "./WelcomeExperience-DckhraAG.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/nico-CY8NzYRB.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var STYLES = [
