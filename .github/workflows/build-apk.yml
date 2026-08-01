@@ -30,24 +30,34 @@ jobs:
     - name: Install dependencies
       run: npm install --legacy-peer-deps
 
-    - name: Build web app
+    - name: Create web assets
       run: |
         mkdir -p .output/public
-        echo '<!DOCTYPE html><html lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nico AI</title><link rel="icon" href="/favicon.ico"><script type="module" crossorigin src="/assets/main.js"></script><link rel="stylesheet" crossorigin href="/assets/main.css"></head><body><div id="root"></div></body></html>' > .output/public/index.html
-        cp public/favicon.ico .output/public/
+        echo '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nico AI</title><link rel="icon" href="/favicon.ico"></head><body><div id="root"></div><script type="module" src="/assets/main.js"></script></body></html>' > .output/public/index.html
+        cp public/favicon.ico .output/public/ 2>/dev/null || true
 
     - name: Add Android platform
       run: npx cap add android
 
-    - name: Sync Capacitor
-      run: npx cap sync android
-
-    - name: Copy custom Android files
+    - name: Copy custom files
       run: |
         mkdir -p android/app/src/main/java/com/nico/ai/
         cp apps/mobile/android/VoiceBackgroundService.kt android/app/src/main/java/com/nico/ai/
         cp apps/mobile/android/NicoVoiceServicePlugin.kt android/app/src/main/java/com/nico/ai/
         cp apps/mobile/android/MainActivity.java android/app/src/main/java/com/nico/ai/
+
+    - name: Add Kotlin support to build.gradle
+      run: |
+        # إضافة إضافة Kotlin في أعلى الملف
+        sed -i "1i apply plugin: 'kotlin-android'" android/app/build.gradle
+        # إضافة dependency Kotlin
+        sed -i "/dependencies {/a \    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'" android/app/build.gradle
+        # إضافة مستودع mavenCentral إن لم يكن موجوداً
+        if ! grep -q 'mavenCentral()' android/build.gradle; then
+          sed -i "/repositories {/a \        mavenCentral()" android/build.gradle
+        fi
+        # إضافة classpath Kotlin في build.gradle الرئيسي
+        sed -i "/dependencies {/a \        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'" android/build.gradle
 
     - name: Fix AndroidManifest
       run: |
@@ -58,22 +68,14 @@ jobs:
             <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-            <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-            <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-permission android:name="android.permission.WAKE_LOCK" />
-            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-            <uses-permission android:name="android.permission.READ_CALENDAR" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <application
                 android:allowBackup="true"
                 android:icon="@mipmap/ic_launcher"
                 android:label="Nico AI"
-                android:roundIcon="@mipmap/ic_launcher_round"
                 android:supportsRtl="true"
                 android:theme="@style/AppTheme"
                 android:usesCleartextTraffic="true">
@@ -106,8 +108,11 @@ jobs:
         </manifest>
         MANIFEST
 
+    - name: Sync Capacitor
+      run: npx cap sync android
+
     - name: Build APK
-      run: cd android && ./gradlew assembleDebug
+      run: cd android && chmod +x gradlew && ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
