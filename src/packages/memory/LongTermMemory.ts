@@ -1,35 +1,50 @@
 import type { MemoryRecord } from "../shared/types";
 
-const STORAGE_KEY = "nico.ltm.v1";
+const DB_NAME = "NicoOfflineDB";
+const STORE_NAME = "memories";
 
-/**
- * Durable memory. Backed by localStorage in the browser today; the same
- * interface is implemented by the SQLite/Postgres adapter on the server.
- */
 export class LongTermMemory {
   private records: MemoryRecord[] = [];
+  private db: IDBDatabase | null = null;
 
   constructor(private readonly persistent = true) {
-    this.load();
-  }
-
-  private load() {
-    if (!this.persistent || typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) this.records = JSON.parse(raw) as MemoryRecord[];
-    } catch {
-      this.records = [];
+    if (typeof window !== "undefined") {
+        this.initDB().then(() => this.load());
     }
   }
 
-  private save() {
-    if (!this.persistent || typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.records));
-    } catch {
-      /* quota — memory stays in-process */
-    }
+  private async initDB(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: "id" });
+        }
+      };
+      request.onsuccess = (event) => {
+        this.db = (event.target as IDBOpenDBRequest).result;
+        resolve();
+      };
+      request.onerror = () => reject(new Error("Failed to open IndexedDB"));
+    });
+  }
+
+  private async load() {
+    if (!this.db) return;
+    const transaction = this.db.transaction(STORE_NAME, "readonly");
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.getAll();
+    request.onsuccess = () => {
+      this.records = request.result as MemoryRecord[];
+    };
+  }
+
+  private async saveRecord(record: MemoryRecord) {
+    if (!this.db) return;
+    const transaction = this.db.transaction(STORE_NAME, "readwrite");
+    const store = transaction.objectStore(STORE_NAME);
+    store.put(record);
   }
 
   all(): MemoryRecord[] {
@@ -41,7 +56,7 @@ export class LongTermMemory {
     if (existing) {
       existing.value = record.value;
       existing.score += 1;
-      this.save();
+      this.saveRecord(existing);
       return existing;
     }
     const created: MemoryRecord = {
@@ -51,17 +66,23 @@ export class LongTermMemory {
       score: 1,
     };
     this.records.push(created);
-    this.save();
+    this.saveRecord(created);
     return created;
   }
 
   search(query: string, limit = 5): MemoryRecord[] {
     const q = query.toLowerCase();
-    const tokens = q.split(/\s+/).filter((t) => t.length > 2);
+    // Improved search for Arabic and short words
+    const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
+    if (tokens.length === 0) return [];
+
     return this.records
       .map((r) => {
-        const hay = `${r.key} ${r.value}`.toLowerCase();
-        const hits = tokens.filter((t) => hay.includes(t)).length;
+        const hay = (r.key + " " + r.value).toLowerCase();
+        let hits = 0;
+        for (const token of tokens) {
+            if (hay.includes(token)) hits++;
+        }
         return { r, hits };
       })
       .filter((x) => x.hits > 0)
@@ -70,13 +91,21 @@ export class LongTermMemory {
       .map((x) => x.r);
   }
 
-  forget(id: string) {
+  async forget(id: string) {
     this.records = this.records.filter((r) => r.id !== id);
-    this.save();
+    if (this.db) {
+      const transaction = this.db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      store.delete(id);
+    }
   }
 
-  clear() {
+  async clear() {
     this.records = [];
-    this.save();
+    if (this.db) {
+      const transaction = this.db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      store.clear();
+    }
   }
 }

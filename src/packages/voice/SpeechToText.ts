@@ -1,25 +1,17 @@
-import { VoiceActivityDetector, type VadOptions } from "./VoiceActivityDetector";
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { Device } from '@capacitor/device';
+import { VoiceActivityDetector, VadOptions } from "./VoiceActivityDetector";
 
-/**
- * Browser microphone capture → 16 kHz mono WAV → server transcription.
- * WAV keeps every chunk decodable across Safari/Chrome/Firefox.
- */
-
-/** Transcript plus the metadata stored on the message and voice session. */
 export interface TranscriptionResult {
   text: string;
-  /** Detected (or hinted) language: "ar" | "en" | provider code. */
   language: string;
-  /** Recorded audio length in milliseconds. */
   durationMs: number;
-  /** 0..1 model confidence, when the provider reports it. */
   confidence?: number;
 }
 
 export interface SttHandle {
-  /** True once the detector heard actual speech in this utterance. */
   hasSpeech: () => boolean;
-  /** `hint` biases detection towards the user's preferred language. */
+  /** \`hint\` biases detection towards the user's preferred language. */
   stop: (hint?: string) => Promise<TranscriptionResult>;
   cancel: () => void;
   level: () => number;
@@ -37,8 +29,69 @@ export class SpeechToText {
   constructor(private readonly endpoint = "/api/nico/transcribe") {}
 
   async start(options: SttStartOptions = {}): Promise<SttHandle> {
-    const startedAt = Date.now();
+    // Check if we are on a native platform and have SpeechRecognition available
+    const info = await Device.getInfo();
+    const isNative = info.platform === 'android' || info.platform === 'ios';
+    
+    if (isNative) {
+      try {
+        const available = await SpeechRecognition.available();
+        if (available.available) {
+          return this.startNative(options);
+        }
+      } catch (e) {
+        console.warn("Native SpeechRecognition not available, falling back to Web STT", e);
+      }
+    }
 
+    return this.startWeb(options);
+  }
+
+  private async startNative(options: SttStartOptions): Promise<SttHandle> {
+    const startedAt = Date.now();
+    let transcript = "";
+    let isStopped = false;
+
+    const { hasPermission } = await SpeechRecognition.hasPermission();
+    if (!hasPermission) {
+      await SpeechRecognition.requestPermission();
+    }
+
+    SpeechRecognition.start({
+      language: "ar-SA",
+      maxResults: 1,
+      prompt: "تحدث الآن...",
+      partialResults: true,
+      popup: false,
+    });
+
+    SpeechRecognition.addListener("partialResults", (data: any) => {
+      if (data.matches && data.matches.length > 0) {
+        transcript = data.matches[0];
+      }
+    });
+
+    return {
+      level: () => 0.5, // Native doesn't easily expose real-time levels without more complex setup
+      hasSpeech: () => true,
+      cancel: async () => {
+        isStopped = true;
+        await SpeechRecognition.stop();
+      },
+      stop: async (hint?: string) => {
+        isStopped = true;
+        await SpeechRecognition.stop();
+        return {
+          text: transcript,
+          language: hint ?? "ar",
+          durationMs: Date.now() - startedAt,
+        };
+      }
+    };
+  }
+
+  private async startWeb(options: SttStartOptions = {}): Promise<SttHandle> {
+    const startedAt = Date.now();
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true },
     });
@@ -49,7 +102,6 @@ export class SpeechToText {
     const processor = ctx.createScriptProcessor(4096, 1, 1);
     const chunks: Float32Array[] = [];
     let stopped = false;
-
     processor.onaudioprocess = (e) => {
       if (stopped) return;
       chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
@@ -57,7 +109,6 @@ export class SpeechToText {
     source.connect(analyser);
     source.connect(processor);
     processor.connect(ctx.destination);
-
     const levelData = new Uint8Array(analyser.frequencyBinCount);
     const readLevel = () => {
       analyser.getByteTimeDomainData(levelData);
@@ -65,9 +116,7 @@ export class SpeechToText {
       for (const v of levelData) peak = Math.max(peak, Math.abs(v - 128) / 128);
       return peak;
     };
-
-    // Voice activity detection: ends the utterance on trailing silence so the
-    // user never has to press stop, and caps runaway recordings.
+    
     let vad: VoiceActivityDetector | null = null;
     if (options.vad !== false) {
       vad = new VoiceActivityDetector({
@@ -77,7 +126,6 @@ export class SpeechToText {
       });
       vad.attach(readLevel);
     }
-
     const teardown = async () => {
       stopped = true;
       vad?.stop();
@@ -89,7 +137,6 @@ export class SpeechToText {
       await ctx.close();
       return rate;
     };
-
     return {
       level: readLevel,
       hasSpeech: () => vad?.hasSpeech ?? true,
@@ -99,32 +146,43 @@ export class SpeechToText {
         const rate = await teardown();
         const wav = encodeWav(chunks, rate);
         if (wav.size < 2048) throw new Error("empty_recording");
+        
+        // Check for offline status
+        if (!navigator.onLine) {
+           throw new Error("offline_no_stt");
+        }
+
         const form = new FormData();
         form.append("audio", wav, "recording.wav");
         if (hint) form.append("language", hint);
         form.append("duration_ms", String(durationMs));
-        const res = await fetch(this.endpoint, { method: "POST", body: form });
-        if (!res.ok) {
-          const detail = await res.text().catch(() => "");
-          throw new Error(`Transcription failed [${res.status}]: ${detail}`);
+        
+        try {
+          const res = await fetch(this.endpoint, { method: "POST", body: form });
+          if (!res.ok) {
+            const detail = await res.text().catch(() => "");
+            throw new Error(`Transcription failed [${res.status}]: ${detail}`);
+          }
+          const data = (await res.json()) as {
+            text?: string;
+            language?: string;
+            confidence?: number;
+          };
+          return {
+            text: (data.text ?? "").trim(),
+            language: data.language ?? hint ?? "ar",
+            durationMs,
+            confidence: data.confidence,
+          } satisfies TranscriptionResult;
+        } catch (e) {
+          console.error("Web STT Fetch Error", e);
+          throw new Error("offline_no_stt");
         }
-        const data = (await res.json()) as {
-          text?: string;
-          language?: string;
-          confidence?: number;
-        };
-        return {
-          text: (data.text ?? "").trim(),
-          language: data.language ?? hint ?? "ar",
-          durationMs,
-          confidence: data.confidence,
-        } satisfies TranscriptionResult;
       },
     };
   }
 }
 
-/** Downsamples to 16 kHz and writes a standard 16-bit mono WAV. */
 export function encodeWav(chunks: Float32Array[], sampleRate: number, target = 16000): Blob {
   const total = chunks.reduce((n, c) => n + c.length, 0);
   const merged = new Float32Array(total);
@@ -133,7 +191,6 @@ export function encodeWav(chunks: Float32Array[], sampleRate: number, target = 1
     merged.set(c, offset);
     offset += c.length;
   }
-
   const ratio = sampleRate / target;
   const outLength = Math.floor(merged.length / ratio);
   const samples = new Int16Array(outLength);
@@ -141,7 +198,6 @@ export function encodeWav(chunks: Float32Array[], sampleRate: number, target = 1
     const s = Math.max(-1, Math.min(1, merged[Math.floor(i * ratio)] ?? 0));
     samples[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
   }
-
   const buffer = new ArrayBuffer(44 + samples.length * 2);
   const view = new DataView(buffer);
   const writeStr = (pos: number, str: string) => {
