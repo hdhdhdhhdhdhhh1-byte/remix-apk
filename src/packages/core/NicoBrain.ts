@@ -185,9 +185,11 @@ async handle(transcript: string): Promise<AgentResponse> {
     if (knowledgeIntent) {
       knowledgeAnswer =
         await this.knowledge.ask(utterance);
+
+      if (!knowledgeAnswer) {
+        knowledgeAnswer = "عذراً، لا أملك معلومات كافية حول هذا الموضوع في قاعدة بياناتي المحلية حالياً.";
+      }
     }
-
-
 
     if (knowledgeAnswer) {
 

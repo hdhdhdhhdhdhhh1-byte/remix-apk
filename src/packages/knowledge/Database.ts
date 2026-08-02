@@ -33,8 +33,11 @@ export async function getDatabase(){
         title TEXT,
         content TEXT,
         category TEXT,
-        keywords TEXT
+        keywords TEXT,
+        importance_weight REAL DEFAULT 1.0
       );
+      CREATE INDEX idx_knowledge_title ON knowledge(title);
+      CREATE INDEX idx_knowledge_category ON knowledge(category);
     `);
 
     saveDatabase();
