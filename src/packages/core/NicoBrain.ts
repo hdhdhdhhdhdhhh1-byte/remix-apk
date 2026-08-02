@@ -227,7 +227,16 @@ async handle(transcript: string): Promise<AgentResponse> {
 
           intent,
 
-          decision: true,
+          decision: {
+            plan: { id: "knowledge-fallback", goal: "Provide knowledge answer", steps: [], requiresMemory: false, requiresPermissions: [] },
+            executable: [],
+            blocked: [],
+            needsMemoryRecall: false,
+            needsMemoryWrite: false,
+            needsModel: false,
+            style: "informative",
+            rationale: ["Fast-return path: knowledge answer provided."],
+          },
 
           executions: [],
 
@@ -346,7 +355,16 @@ async handle(transcript: string): Promise<AgentResponse> {
 
           intent,
 
-          decision: true,
+          decision: {
+            plan: { id: "management-fallback", goal: "Handle management command", steps: [], requiresMemory: true, requiresPermissions: [] },
+            executable: [],
+            blocked: [],
+            needsMemoryRecall: true,
+            needsMemoryWrite: true,
+            needsModel: false,
+            style: "informative",
+            rationale: ["Fast-return path: management handled."],
+          },
 
           executions: [],
 

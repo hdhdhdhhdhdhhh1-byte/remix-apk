@@ -25,7 +25,7 @@ export interface NotificationBridge {
 export interface PhoneActionsBridge {
   call(number: string): Promise<void>;
   sendSms(number: string, message: string): Promise<void>;
-  pickContact(): Promise<{ name: string; number?: string } | null>;
+  pickContact(): Promise<{ name: string | any; number?: string | null | undefined } | null>;
 }
 
 export interface AppControlBridge {

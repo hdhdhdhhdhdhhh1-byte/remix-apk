@@ -156,7 +156,7 @@ class CapacitorPhoneActions implements PhoneActionsBridge {
         },
       });
       return {
-        name: res.contact.displayName || "Unknown",
+        name: res.contact.name?.display || "Unknown",
         number: res.contact.phones?.[0]?.number,
       };
     } catch {
