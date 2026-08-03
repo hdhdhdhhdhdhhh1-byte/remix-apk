@@ -1,26 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { aiClient } from "@/lib/ai/ai.server";
-import { nicoRateLimiter } from "@/lib/rate-limit.server";
+import { spawn } from "child_process";
+import { writeFile, unlink } from "fs/promises";
+import { tmpdir } from "os";
+import { join } from "path";
+import { randomUUID } from "crypto";
 
 export const Route = createFileRoute("/api/nico/transcribe")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const ip = request.headers.get("x-forwarded-for") || "anonymous";
-        const decision = nicoRateLimiter.check(ip);
-        if (!decision.allowed) {
-          return new Response("Too many requests", {
-            status: 429,
-            headers: { "Retry-After": Math.ceil(decision.retryAfterMs / 1000).toString() },
-          });
-        }
-
-        if (!aiClient.isConfigured()) {
-          return new Response("AI provider not configured", {
-            status: 500,
-          });
-        }
-
         const formData = await request.formData();
 
         const audio = formData.get("audio");
@@ -31,19 +19,67 @@ export const Route = createFileRoute("/api/nico/transcribe")({
           });
         }
 
-        const result = await aiClient.transcribe({
-          file: audio,
-        });
+        const id = randomUUID();
+        const input = join(tmpdir(), `nico-${id}.wav`);
 
-        if (!result.ok) {
-          return new Response("Transcription failed", {
-            status: 500,
+        try {
+          const buffer = Buffer.from(await audio.arrayBuffer());
+          await writeFile(input, buffer);
+
+          const text = await new Promise<string>((resolve, reject) => {
+            let output = "";
+
+            const whisper = spawn(
+              "/data/data/com.termux/files/home/whisper.cpp/build/bin/whisper-cli",
+              [
+                "-m",
+                "/data/data/com.termux/files/home/whisper.cpp/models/ggml-base.bin",
+                "-f",
+                input,
+                "-l",
+                "ar",
+                "--no-timestamps",
+                "--no-prints",
+              ]
+            );
+
+            whisper.stdout.on("data", (data) => {
+              output += data.toString();
+            });
+
+            whisper.stderr.on("data", (data) => {
+              console.error("whisper:", data.toString());
+            });
+
+            whisper.on("close", (code) => {
+              if (code === 0) {
+                resolve(output.trim());
+              } else {
+                reject(new Error(`whisper exited ${code}`));
+              }
+            });
           });
-        }
 
-        return Response.json({
-          text: result.text,
-        });
+          console.log("NICO TRANSCRIPT:", text);
+
+          return Response.json({
+            text,
+            language: "ar",
+          });
+
+        } catch (error) {
+          console.error(error);
+
+          return new Response(
+            error instanceof Error ? error.message : "Transcription failed",
+            {
+              status: 500,
+            }
+          );
+
+        } finally {
+          await unlink(input).catch(() => {});
+        }
       },
     },
   },

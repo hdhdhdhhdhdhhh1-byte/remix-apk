@@ -1,4 +1,3 @@
-import { i as globalthis_default } from "../@capacitor/app+[...].mjs";
 import { C as getStylesheetHref, F as decodePath, N as createLRUCache, P as invariant, b as createInlineCssPlaceholderAsset, j as rootRouteId, v as GLOBAL_TSR, x as createInlineCssStyleAsset, y as TSR_SCRIPT_BARRIER_ID } from "./react-router+[...].mjs";
 //#region node_modules/seroval/dist/index.js
 var SYM_ASYNC_ITERATOR = Symbol.asyncIterator;
@@ -212,7 +211,7 @@ else if (typeof self !== "undefined") Object.defineProperty(self, REFERENCES_KEY
 	writable: false,
 	enumerable: false
 });
-else if (typeof globalthis_default !== "undefined") Object.defineProperty(globalthis_default, REFERENCES_KEY, {
+else if (typeof global !== "undefined") Object.defineProperty(global, REFERENCES_KEY, {
 	value: INV_REFERENCE,
 	configurable: true,
 	writable: false,

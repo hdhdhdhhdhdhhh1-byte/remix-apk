@@ -69,7 +69,7 @@ export interface SpeakOptions {
 export async function speak(cfg: AiConfig, opts: SpeakOptions): Promise<Response> {
   const fs = await import("fs/promises");
   const { spawn } = await import("child_process");
-  const output = `/data/data/com.termux/files/home/remix-of-90159487/nico.wav`;
+  const output = `/data/data/com.termux/files/home/remix-apk/nico.wav`;
   const safe = opts.text.replace(/"/g, "").replace(/`/g, "").slice(0, 400);
 
   await new Promise<void>((resolve, reject) => {

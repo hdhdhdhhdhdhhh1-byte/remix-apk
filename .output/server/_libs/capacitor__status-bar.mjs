@@ -1,5 +1,5 @@
 import { n as __exportAll } from "../_runtime.mjs";
-import { r as registerPlugin } from "./@capacitor/app+[...].mjs";
+import { r as registerPlugin } from "./@capacitor-community/contacts+[...].mjs";
 //#region node_modules/@capacitor/status-bar/dist/esm/definitions.js
 var Style;
 (function(Style) {

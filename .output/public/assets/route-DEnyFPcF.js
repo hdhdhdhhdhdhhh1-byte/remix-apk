@@ -1,1 +1,0 @@
-import{s as e,u as t}from"./index-kTlDnsWk.js";var n=t(),r=()=>(0,n.jsx)(e,{});export{r as component};

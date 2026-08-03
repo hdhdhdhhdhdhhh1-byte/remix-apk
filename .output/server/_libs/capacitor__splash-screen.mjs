@@ -1,5 +1,5 @@
 import { n as __exportAll } from "../_runtime.mjs";
-import { n as WebPlugin, r as registerPlugin } from "./@capacitor/app+[...].mjs";
+import { n as WebPlugin, r as registerPlugin } from "./@capacitor-community/contacts+[...].mjs";
 //#region node_modules/@capacitor/splash-screen/dist/esm/index.js
 var esm_exports = /* @__PURE__ */ __exportAll({ SplashScreen: () => SplashScreen });
 var SplashScreen = registerPlugin("SplashScreen", { web: () => Promise.resolve().then(() => web_exports).then((m) => new m.SplashScreenWeb()) });

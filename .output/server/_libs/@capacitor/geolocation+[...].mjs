@@ -1,5 +1,5 @@
 import { n as __exportAll } from "../../_runtime.mjs";
-import { n as WebPlugin, r as registerPlugin } from "./app+[...].mjs";
+import { n as WebPlugin, r as registerPlugin } from "../@capacitor-community/contacts+[...].mjs";
 //#region node_modules/@capacitor/synapse/dist/synapse.mjs
 function s(t) {
 	t.CapacitorUtils.Synapse = new Proxy({}, { get(e, n) {

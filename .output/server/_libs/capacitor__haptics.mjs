@@ -1,5 +1,5 @@
 import { n as __exportAll } from "../_runtime.mjs";
-import { n as WebPlugin, r as registerPlugin } from "./@capacitor/app+[...].mjs";
+import { n as WebPlugin, r as registerPlugin } from "./@capacitor-community/contacts+[...].mjs";
 //#region node_modules/@capacitor/haptics/dist/esm/definitions.js
 var ImpactStyle;
 (function(ImpactStyle) {

@@ -1,5 +1,5 @@
 import { n as __exportAll } from "../_runtime.mjs";
-import { n as WebPlugin, r as registerPlugin } from "./@capacitor/app+[...].mjs";
+import { n as WebPlugin, r as registerPlugin } from "./@capacitor-community/contacts+[...].mjs";
 //#region node_modules/@capacitor/local-notifications/dist/esm/definitions.js
 /**
 * Day of the week. Used for scheduling notifications on a particular weekday.

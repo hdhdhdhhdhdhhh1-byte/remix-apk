@@ -287,8 +287,13 @@ export function useNico() {
         return;
       }
 
+      console.log("NICO STEP 1 BEFORE MEMORY");
       const beforeIds = new Set(runtime.memory.longTerm.all().map((m) => m.id));
+      console.log("NICO STEP 2 BEFORE BRAIN");
+      console.log("NICO BEFORE BRAIN:", transcript);
+        console.log("NICO STEP 3 CALL BRAIN", transcript);
       const res = await runtime.brain.handle(transcript);
+      console.log("NICO STEP 4 BRAIN DONE", res.speech);
       setLastIntent(res.intent.name);
       setLastTrace(res.trace);
 
@@ -364,7 +369,9 @@ export function useNico() {
 
   const stopListening = useCallback(async () => {
     try {
-      const result = await runtime.voice.stopListening();
+      console.log("STEP A");
+const result = await runtime.voice.stopListening();
+console.log("STEP B", result);
       if (!result.text) {
         if (!continuousRef.current) setError(NICO_PHRASES.notHeard);
         return;
@@ -373,7 +380,8 @@ export function useNico() {
         ...prev,
         { id: crypto.randomUUID(), role: "user", content: result.text, createdAt: Date.now() },
       ]);
-      await process(result.text, {
+      console.log("STEP C BEFORE PROCESS", result.text);
+await process(result.text, {
         language: result.language,
         durationMs: result.durationMs,
         confidence: result.confidence,
